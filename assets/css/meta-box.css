@@ -155,3 +155,21 @@
     margin-left: 20px;
     margin-top: 5px;
 }
+
+
+/* Product Meta Box */
+#_wdass_event_data .inside {
+    display: flex;
+    flex-direction: row;
+    justify-content: flex-start;
+}
+
+#events-table {
+    min-width: 800px;
+}
+
+#events-table :is(th, td) {
+    text-align: left;
+    padding: 10px !important;
+    border-bottom: 1px solid #d1d1d1;
+}

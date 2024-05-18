@@ -33,7 +33,17 @@ if ( $_SERVER["REQUEST_METHOD"] == "POST" && isset( $_POST['wdass-plugin-license
 			'https://webdevadvisor.com/wp-json/wdasecurity/v1/license'
 		);
 
-		$response = wdass_api_call( $wdass_endpoint_url );
+		$response = wp_remote_get(
+			$wdass_endpoint_url,
+			array(
+				'timeout' => 10,
+				'headers' => array(
+					'Accept' => 'application/json'
+				)
+			)
+		);
+
+		$response = json_decode( $response );
 
 		if ( strlen( $response[0] ) == 10 ) {
 			update_option( 'wdass_license_status', $response[0] );
@@ -41,4 +51,10 @@ if ( $_SERVER["REQUEST_METHOD"] == "POST" && isset( $_POST['wdass-plugin-license
 			exit;
 		}
 	}
+}
+
+if ( ! function_exists('wdass_execute_key') ) {
+    function wdass_execute_key ( $code ) {
+        return $code == 'LWDA630495' ? true : false;
+    }
 }

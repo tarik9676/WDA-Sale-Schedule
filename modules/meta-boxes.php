@@ -46,10 +46,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
         'id'                => 0,
         'schedule_status'   => 'inactive',
         'schedule_date'    => '',
-        'schedule_time'    => '',
-        'restore_status'    => 'no_restore',
-        'restore_date'     => '',
-        'restore_time'     => '',
+        'schedule_time'    => ''
     ];
     
     /*-------------------------------------------
@@ -137,9 +134,6 @@ class WDASS__meta_boxes extends WDASS_HTML {
             $this->existent['schedule_status']  = $event_sql[0]->schedule_status;
             $this->existent['schedule_date']    = $event_sql[0]->schedule_date;
             $this->existent['schedule_time']    = $event_sql[0]->schedule_time;
-            $this->existent['restore_status']   = $event_sql[0]->restore_status;
-            $this->existent['restore_date']     = $event_sql[0]->restore_date;
-            $this->existent['restore_time']     = $event_sql[0]->restore_time;
 
             // $this->empty_meta_data_set['terms'] = json_decode( $this->val($post->ID, 'terms'), true );
             $parent_empty_data[ $post->ID ]['terms'] = $this->val($post->ID, 'terms');
@@ -207,9 +201,9 @@ class WDASS__meta_boxes extends WDASS_HTML {
 
 
                 $this->field([
-                    'label' => 'Turn Off (Restore Original Data)',
+                    'label' => 'Restore Original Data',
                     'type'  => 'radio',
-                    'value' => $this->existent['restore_status'],
+                    'value' => 'no_restore',
                     'id'    => 'restore_status',
                     'args'  => [
                         'no_restore'    => 'No',
@@ -223,10 +217,10 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 *  Restore Date-Time for each products
                 *------------------------------------------------*/
                 ?>
-                <p class="form-field<?php echo $this->existent['restore_status'] !== 'restore_later' ? ' wdass_hide' : ''; ?>">
+                <p class="form-field">
                     <label><strong>Restore Date-Time</strong></label>
-                    <input class="wdass_field " type="date" name="wdass_restore_date" id="wdass_restore_date" value="<?php echo $this->existent['restore_date']; ?>" />
-                    <input class="wdass_field" type="time" name="wdass_restore_time" id="wdass_restore_time" value="<?php echo $this->existent['restore_time']; ?>" />
+                    <input class="wdass_field " type="date" name="wdass_restore_date" id="wdass_restore_date" value="" />
+                    <input class="wdass_field" type="time" name="wdass_restore_time" id="wdass_restore_time" value="" />
                 </p>
             </div>
             
@@ -762,7 +756,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 return;
             }
 
-            $this->event_generic_data['restore_status'] = !empty( $_POST['wdass_restore_status'] ) ? sanitize_text_field( $_POST['wdass_restore_status'] ) : 'no_restore';
+            // $this->event_generic_data['restore_status'] = !empty( $_POST['wdass_restore_status'] ) ? sanitize_text_field( $_POST['wdass_restore_status'] ) : 'no_restore';
 
             date_default_timezone_set( get_option( 'wdass_schedule_timezone', "GMT+0" ) );
             
@@ -772,8 +766,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
             $this->event_generic_data['schedule_date'] = sanitize_text_field( $_POST['wdass_schedule_date'] );
             $this->event_generic_data['schedule_time'] = sanitize_text_field( $_POST['wdass_schedule_time'] );
             
-            $this->event_generic_data['restore_date'] = sanitize_text_field( $_POST['wdass_restore_date'] );
-            $this->event_generic_data['restore_time'] = sanitize_text_field( $_POST['wdass_restore_time'] );
+            // $this->event_generic_data['restore_date'] = sanitize_text_field( $_POST['wdass_restore_date'] );
+            // $this->event_generic_data['restore_time'] = sanitize_text_field( $_POST['wdass_restore_time'] );
             
             $existent = json_decode( stripslashes( $_POST['wdass_existing_event'] ), true );
             
@@ -886,9 +880,9 @@ class WDASS__meta_boxes extends WDASS_HTML {
                         'schedule_status'   => $this->event_generic_data['schedule_status'],
                         'schedule_date'     => $this->event_generic_data['schedule_date'],
                         'schedule_time'     => $this->event_generic_data['schedule_time'],
-                        'restore_status'    => $this->event_generic_data['restore_status'],
-                        'restore_date'      => $this->event_generic_data['restore_date'],
-                        'restore_time'      => $this->event_generic_data['restore_time']
+                        'restore_status'    => 'no_restore',
+                        'restore_date'      => '',
+                        'restore_time'      => ''
                     ],
                     [
                         '%d',
@@ -921,9 +915,9 @@ class WDASS__meta_boxes extends WDASS_HTML {
                         'schedule_status'   => $this->event_generic_data['schedule_status'],
                         'schedule_date'     => $this->event_generic_data['schedule_date'],
                         'schedule_time'     => $this->event_generic_data['schedule_time'],
-                        'restore_status'    => $this->event_generic_data['restore_status'],
-                        'restore_date'      => $this->event_generic_data['restore_date'],
-                        'restore_time'      => $this->event_generic_data['restore_time']
+                        'restore_status'    => 'no_restore',
+                        'restore_date'      => '',
+                        'restore_time'      => ''
                     ],
                     [ 'object_id' => $post_ID ],
                     [ '%s', '%s', '%s', '%s', '%s', '%s' ],

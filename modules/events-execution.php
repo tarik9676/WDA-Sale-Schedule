@@ -44,28 +44,28 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
             }
 
 
-            /*----------------------------------------------------
-            *  Getting all pending restore events from DB
-            *----------------------------------------------------*/
-            $restore_events_sql = $wpdb->get_results(
-                "SELECT * FROM $table_events
-                WHERE restore_status = 'restore_later' OR restore_status = 'restore_now';"
-            );
+            // /*----------------------------------------------------
+            // *  Getting all pending restore events from DB
+            // *----------------------------------------------------*/
+            // $restore_events_sql = $wpdb->get_results(
+            //     "SELECT * FROM $table_events
+            //     WHERE restore_status = 'restore_later' OR restore_status = 'restore_now';"
+            // );
 
-            if ( count($restore_events_sql) ) {
-                foreach ( $restore_events_sql as $restore_event ) {
-                    $restore_time_string = $restore_event->restore_date . ' ' . $restore_event->restore_time;
+            // if ( count($restore_events_sql) ) {
+            //     foreach ( $restore_events_sql as $restore_event ) {
+            //         $restore_time_string = $restore_event->restore_date . ' ' . $restore_event->restore_time;
 
-                    if ( $restore_event->restore_status == 'restore_now' ) {
-                        $this->execute( $wpdb, $restore_event->object_id, $restore_event->id, 'original', 'restore_status', 'no_restore' );
-                    } else if (
-                        $restore_event->restore_status == 'restore_later'
-                        && strtotime( current_time( 'mysql' ) ) > strtotime( $restore_time_string )
-                    ) {
-                        $this->execute( $wpdb, $restore_event->object_id, $restore_event->id, 'original', 'restore_status', 'no_restore' );
-                    }
-                } // Events Table Loop ENDS
-            }
+            //         if ( $restore_event->restore_status == 'restore_now' ) {
+            //             $this->execute( $wpdb, $restore_event->object_id, $restore_event->id, 'original', 'restore_status', 'no_restore' );
+            //         } else if (
+            //             $restore_event->restore_status == 'restore_later'
+            //             && strtotime( current_time( 'mysql' ) ) > strtotime( $restore_time_string )
+            //         ) {
+            //             $this->execute( $wpdb, $restore_event->object_id, $restore_event->id, 'original', 'restore_status', 'no_restore' );
+            //         }
+            //     } // Events Table Loop ENDS
+            // }
         }
 
         private function execute ( $wpdb, $post_id, $event_id, $data_type, $status_key, $status_value ) {

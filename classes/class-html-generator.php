@@ -1,13 +1,11 @@
 <?php
 
-class WDASS_HTML {
-    public $template;
-    public $args;
-    // private $html = '';
+if ( ! class_exists( 'WDASS_HTML' ) ) {
 
-    public function __construct( $template = '', $args = [] ) {
-        $this->template = $template;
-        $this->args = $args;
+
+class WDASS_HTML {
+    public function __construct() {
+        //
     }
 
     public function tabs ( $args = [] ) {
@@ -29,7 +27,7 @@ class WDASS_HTML {
     private function select ( $params ) {
         $input = "";
 
-        $input .= '<select class="wdass_field {CLASS}" id="{ID}" name="{ID}">';
+        $input .= '<select class="wdass_field {CLASS}" name="{ID}">';
 
         foreach ($params['args'] as $key => $val) {
             $selected = $params['value'] == $key ? 'selected="selected"' : '';
@@ -46,7 +44,7 @@ class WDASS_HTML {
 
         foreach ($params['args'] as $key => $val) {
             $checked = $params['value'] == $key ? 'checked="checked"' : '';
-            $input .= '<label><input class="wdass_field {CLASS}" type="radio" id="{ID}" name="{ID}" ' . $checked . ' value="' . $key . '" /> ' . $val . '</label>';
+            $input .= '<label><input class="wdass_field {CLASS}" type="radio" name="{ID}" ' . $checked . ' value="' . $key . '" /> ' . $val . '</label>';
         }
 
         return $input;
@@ -58,7 +56,7 @@ class WDASS_HTML {
         foreach ($params['args'] as $key => $val) {
             $data = array_key_exists( 'data', $val) ? $val['data'] : [ 'yes', 'no' ];
 
-            $input .= '<span class="{WRAPPER_ID}"><input class="wdass_field {CLASS}" type="checkbox" name="{CB_ID}" id="{CB_ID}" {CB_VALUE} {CB_CHECKED} {CB_DATA} /> <label for="{CB_ID}">{CB_LABEL}</label></span>';
+            $input .= '<span class="{WRAPPER_ID}"><input class="wdass_field {CLASS}" type="checkbox" name="{CB_ID}" {CB_VALUE} {CB_CHECKED} {CB_DATA} /> <label for="{CB_ID}">{CB_LABEL}</label></span>';
 
 
             /*----- String Translation -----*/
@@ -76,7 +74,8 @@ class WDASS_HTML {
     }
 
     public function field ( $params ) {
-        $label = '<label for="{ID}"><strong>{LABEL}</strong></label>';
+        $label = '<label><strong>{LABEL}</strong></label>';
+        // $label = '<strong>{LABEL}</strong>';
 		$input = '';
 
 		switch ( $params['type'] ) {
@@ -89,16 +88,15 @@ class WDASS_HTML {
 				break;
 
             case 'checkbox':
-                // $label = $params['label'] ? $params['label'] : '';
                 $input = $this->checkbox( $params );
                 break;
 
             case 'textarea':
-                $input = '<textarea class="wdass_field {CLASS}" name="{ID}" id="{ID}" placeholder="{PLACEHOLDER}" >{VALUE}</textarea>';
+                $input = '<textarea class="wdass_field {CLASS}" name="{ID}" placeholder="{PLACEHOLDER}" >{VALUE}</textarea>';
                 break;
 			
 			default:
-				$input = '<input class="wdass_field {CLASS}" type="{TYPE}" name="{ID}" id="{ID}" value="{VALUE}" placeholder="{PLACEHOLDER}" />';
+				$input = '<input class="wdass_field {CLASS}" type="{TYPE}" name="{ID}" value="{VALUE}" placeholder="{PLACEHOLDER}" />';
 				break;
 		}
 
@@ -134,4 +132,7 @@ class WDASS_HTML {
         </div>
         <?php
     }
+}
+
+
 }

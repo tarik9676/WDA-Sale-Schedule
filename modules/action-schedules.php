@@ -15,8 +15,8 @@ function wdass_scheduled_events () {
 					<th>Product</th>
 					<th>Schedule Status</th>
 					<th>Schedule Time</th>
-					<th>Restore Status</th>
-					<th>Restore Time</th>
+					<!-- <th>Restore Status</th>
+					<th>Restore Time</th> -->
 				</tr>
 			</thead>
 			<tbody>
@@ -28,8 +28,6 @@ function wdass_scheduled_events () {
 					<td><?php echo '<strong>#' . $event->object_id . '</strong> ' . get_the_title( $event->object_id ); ?></td>
 					<td><?php echo ucwords( str_replace('_', ' ', $event->schedule_status) ); ?></td>
 					<td><?php echo $event->schedule_date . ' ' . $event->schedule_time; ?></td>
-					<td><?php echo ucwords( str_replace('_', ' ', $event->restore_status) ); ?></td>
-					<td><?php echo $event->restore_date . ' ' . $event->restore_time; ?></td>
 				</tr>
 				<?php
 			}

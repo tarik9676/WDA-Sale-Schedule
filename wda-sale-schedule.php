@@ -62,12 +62,10 @@ define( 'WDASS_ROOT_URL', plugin_dir_url( __FILE__ )) ;
 /*-------------------------------------------
 *  Funtions
 *-------------------------------------------*/
-require_once( WDASS_ROOT_DIR . 'functions/test.php' );
 require_once( WDASS_ROOT_DIR . 'functions/admin-settings-template.php' );
 require_once( WDASS_ROOT_DIR . 'functions/activation-actions.php' );
 require_once( WDASS_ROOT_DIR . 'functions/script-enqueue.php' );
 require_once( WDASS_ROOT_DIR . 'functions/admin-menu.php' );
-require_once( WDASS_ROOT_DIR . 'functions/api-call.php' );
 
 
 /*-------------------------------------------

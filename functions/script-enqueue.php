@@ -40,9 +40,6 @@ if ( ! function_exists('wdass_backend_assets') ) {
     add_action( 'admin_enqueue_scripts', 'wdass_backend_assets', 10 );
 
     function wdass_backend_assets () {
-        // Admin CSS
-        wp_enqueue_style( 'wdass-admin-style', WDASS_ROOT_URL . 'assets/css/backend.css' );
-
         // Meta Box CSS
         wp_enqueue_style( 'wdass-meta-box', WDASS_ROOT_URL . 'assets/css/meta-box.css' );
 

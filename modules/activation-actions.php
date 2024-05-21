@@ -1,5 +1,8 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
+
 if ( ! function_exists( 'wdass_activation_actions' ) ) {
     function wdass_activation_actions() {
         global $wpdb;
@@ -35,6 +38,7 @@ if ( ! function_exists( 'wdass_activation_actions' ) ) {
         dbDelta( $sql_eventsmeta );
         
         add_option( 'wdass_db_version', $DB_VERSION );
+        add_option( 'wdass_plugin_version', 'free' );
         add_option( 'wdass_schedule_timezone', "GMT+0" );
     }
 }

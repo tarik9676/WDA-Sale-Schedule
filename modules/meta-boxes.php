@@ -1,5 +1,7 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
 if ( ! function_exists( 'wdass_meta_boxes' ) ) {
     
     /*-------------------------------------------
@@ -12,7 +14,6 @@ if ( ! function_exists( 'wdass_meta_boxes' ) ) {
 
     if ( is_admin() ) {
         add_action( 'load-post.php',     'wdass_meta_boxes' );
-        // add_action( 'load-post-new.php', 'wdass_meta_boxes' );
     }
 }
 
@@ -21,8 +22,6 @@ class WDASS__meta_boxes extends WDASS_HTML {
 
     private $event_generic_data = [];
     private $meta_array = [];
-    // private $terms_product_cat = [];
-    // private $terms_product_tag = [];
 
     private $empty_meta_data_set = [
         'post_title'        => '404',
@@ -54,9 +53,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
     * the class is constructed.
     *-------------------------------------------*/
     public function __construct() {
-        if ( wdass_execute_key( get_option( 'wdass_license_status' ) ) ) {
-            add_action( 'add_meta_boxes', [ $this, 'add_meta_box' ] );
-        }
+        add_action( 'add_meta_boxes', [ $this, 'add_meta_box' ] );
         add_action( 'save_post_product', [ $this, 'collect_data' ], 10, 3 );
     }
 
@@ -166,7 +163,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 ['name' => 'General', 'id' => 'general', 'class' => 'active'],
                 ['name' => 'Inventory', 'id' => 'inventory'],
                 ['name' => 'Contents', 'id' => 'contents'],
-                ['name' => 'Variations', 'id' => 'variations', 'class' => 'show_if_variable'],
+                ['name' => 'Variations <a href="#">Upgrade to Premium</a>', 'id' => 'variations', 'class' => 'show_if_variable wdass__premium-notice'],
                 ['name' => 'Miscellaneous', 'id' => 'misc'],
             ]);
 
@@ -209,7 +206,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
                         'no_restore'    => 'No',
                         'restore_now'   => 'Restore Now',
                         'restore_later' => 'Restore Later',
-                    ]
+                    ],
+                    'field_class' => 'wdass__requres_premium'
                 ]);
 
 
@@ -217,10 +215,11 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 *  Restore Date-Time for each products
                 *------------------------------------------------*/
                 ?>
-                <p class="form-field">
+                <p class="form-field wdass__requres_premium">
                     <label><strong>Restore Date-Time</strong></label>
-                    <input class="wdass_field " type="date" name="wdass_restore_date" id="wdass_restore_date" value="" />
-                    <input class="wdass_field" type="time" name="wdass_restore_time" id="wdass_restore_time" value="" />
+                    <input class="wdass_field " type="date" name="wdass_restore_date" id="wdass_restore_date" value="" disabled />
+                    <input class="wdass_field" type="time" name="wdass_restore_time" id="wdass_restore_time" value="" disabled />
+                    <span class="wdass__premium-notice">Unlock this feature by <a href="//webdevadvisor.com">Upgrading to premium version</a></span>
                 </p>
             </div>
             
@@ -228,29 +227,6 @@ class WDASS__meta_boxes extends WDASS_HTML {
             <!-- PRODUCT BASIC/USUAL FIELDS | Title, Thumbnail, Status, Regular & Sale price -->
             <div class="wdass__meta-content active" data-container="general">
                 <?php
-
-                /*------------------------------------------------
-                *  Post Title
-                *------------------------------------------------*/
-                $this->field([
-                    'label' => 'Product Title',
-                    'type'  => 'text',
-                    'value' => $this->val($post->ID, 'post_title'),
-                    'id'    => 'post_title',
-                    'class' => 'wdass__parent-input'
-                ]);
-
-                
-                /*------------------------------------------------
-                *  Product thumbnail
-                *------------------------------------------------*/
-                // $this->media( $post->ID, 'wdass_thumbnail_id', $this->val($post->ID, '_thumbnail_id'), 'wdass__parent-input' );
-                $this->media([
-                    'post_id'   => $post->ID,
-                    'field_key' => '_thumbnail_id',
-                    'media_id'  => $this->val($post->ID, '_thumbnail_id'),
-                    'class'     => 'wdass__parent-input'
-                ]);
 
                 
                 /*------------------------------------------------
@@ -269,6 +245,19 @@ class WDASS__meta_boxes extends WDASS_HTML {
                         'pending'   => 'Pending Review',
                     ],
                 ]);
+
+                /*------------------------------------------------
+                *  Post Title
+                *------------------------------------------------*/
+                $this->field([
+                    'label' => 'Product Title',
+                    'type'  => 'text',
+                    'value' => $this->val($post->ID, 'post_title'),
+                    'id'    => 'post_title',
+                    'class' => 'wdass__parent-input',
+                ]);
+
+                echo "<hr>";
                 
                 
                 /*------------------------------------------------
@@ -296,6 +285,18 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     'field_class' => 'show_if_simple show_if_grouped show_if_external'
                 ]);
 
+                
+                /*------------------------------------------------
+                *  Product thumbnail
+                *------------------------------------------------*/
+                $this->media([
+                    'post_id'   => $post->ID,
+                    'field_key' => '_thumbnail_id',
+                    'media_id'  => '',
+                    'class'     => 'wdass__parent-input',
+                    'field_class'=> 'wdass__requres_premium'
+                ]);
+
                 ?>
 
                 <h4>Categories</h4>
@@ -320,18 +321,22 @@ class WDASS__meta_boxes extends WDASS_HTML {
 
                 // Output the HTML for category selection
                 ?>
-                <ul id="wdass--category-list">
+                <ul id="wdass--category-list" class="wdass__requres_premium">
                     
                 <?php foreach ($all_product_categories as $category) : ?>
                     <li class='wdass--category'>
                         <label>
-                            <input type="checkbox" data-id="<?php echo esc_attr($category->term_id); ?>" value="" <?php checked(in_array($category->term_id, $product_categories), true); ?>>
+                            <input type="checkbox" data-id="<?php echo esc_attr($category->term_id); ?>" value="" <?php checked(in_array($category->term_id, $product_categories), true); ?> disabled>
                             <?php echo esc_html($category->name); ?>
                         </label>
                     </li>
                 <?php endforeach; ?>
 
                 </ul>
+
+                <span class="wdass__premium-notice">Unlock this feature by <a href="//webdevadvisor.com">Upgrading to premium version</a></span>
+                
+                <hr style="margin-top: 20px;">
                 
                 <h4>Tags</h4>
                 <?php
@@ -344,18 +349,20 @@ class WDASS__meta_boxes extends WDASS_HTML {
 
                 if ( count( $all_product_tags ) ) {
                     ?>
-                    <ul id="wdass--tag-list">
+                    <ul id="wdass--tag-list" class="wdass__requres_premium">
 
                     <?php foreach ($all_product_tags as $tag) : ?>
                         <li class='wdass--tag'>
                             <label>
-                                <input type="checkbox" data-id="<?php echo esc_attr( $tag->term_id ); ?>" value="" <?php checked(in_array($tag->term_id, $product_tags), true); ?>>
+                                <input type="checkbox" data-id="<?php echo esc_attr( $tag->term_id ); ?>" value="" <?php checked(in_array($tag->term_id, $product_tags), true); ?> disabled>
                                 <?php echo esc_html( $tag->name ); ?>
                             </label>
                         </li>
                     <?php endforeach; ?>
 
                     </ul>
+                    
+                    <span class="wdass__premium-notice">Unlock this feature by <a href="//webdevadvisor.com">Upgrading to premium version</a></span>
                     <?php
                 }
                 ?>
@@ -449,7 +456,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
 
                 echo "<br /><br />";
 
-                ?> <h3>Short Description</h3> <?php
+                ?>
+                <h3>Short Description</h3> <?php
                 
                 
                 /*------------------------------------------------
@@ -477,198 +485,10 @@ class WDASS__meta_boxes extends WDASS_HTML {
             if ( $product->is_type( 'variable' ) ) {
                 ?>
                 <div class="wdass__meta-content hide" data-container="variations">
-
-                    <ul class="wdass__variations">
-                    <?php
-                
-                
-                    /*------------------------------------------------
-                    *  Getting Variation Data & Looping Through
-                    *------------------------------------------------*/
-                    $variations = $product->get_available_variations();
-                    
-                    foreach ( $variations as $key => $variation ) {
-                        $var_id = $variation['variation_id'];
-
-                        $parent_empty_data[ $var_id ] = $this->empty_meta_data_set;
-
-                        $var_title = '<strong>#' . $var_id . "</strong> " . $post->post_title . " - ";
-                        $var_title .= ucwords(implode( ', ', array_values($variation['attributes']) ));
-
-                        ?>
-                        <li data-id="<?php echo $var_id; ?>">
-
-                            <!-- Variation/Tab Title -->
-                            <div class="wdass__variation-title">
-                                <strong><?php echo $var_title; ?></strong>
-                            </div>
-
-                            
-                            <div class="wdass__variation-container hide">
-                                
-                                <div class="wdass__row">
-
-                                <?php
-                                /*------------------------------------------------
-                                *  Variable Thumbnail
-                                *------------------------------------------------*/
-                                $this->media([
-                                    'post_id'   => $var_id,
-                                    'field_key' => '_thumbnail_id',
-                                    'media_id'  => $this->val($var_id, '_thumbnail_id'),
-                                    'class'     => 'wdass__variable-input'
-                                ]);
-                                
-
-                                /*------------------------------------------------
-                                *  Variable SKU
-                                *------------------------------------------------*/
-                                $this->field([
-                                    'label' => 'SKU',
-                                    'type'  => 'text',
-                                    'value' => $this->val($var_id, '_sku'),
-                                    'id'    => '_sku',
-                                    'class' => 'wdass__variable-input'
-                                ]);
-                                ?>
-
-                                </div> <!-- WDA ROW ENDS HERE -->
-
-                                
-                                <div class="wdass__row">
-
-                                <?php
-                                /*------------------------------------------------
-                                *  Variable Options
-                                *------------------------------------------------*/
-                                $this->field([
-                                    'class' => 'wdass__variable-input',
-                                    'label' => 'Options',
-                                    'type' => 'checkbox',
-                                    'value' => 'yes',
-                                    'id' => $var_id,
-                                    'args'  => [
-                                        [
-                                            'key'       => 'post_status',
-                                            'label'     => 'Enabled',
-                                            'checked'   => $this->val($var_id, 'post_status') == 'publish' ? 'checked' : '',
-                                            'value'     => $this->val($var_id, 'post_status') ? $this->val($var_id, 'post_status') : 'publish',
-                                            'data'      => ['publish', 'private']
-                                        ],
-                                        [
-                                            'key'       => '_virtual',
-                                            'label'     => 'Virtual',
-                                            'checked'   => $this->val($var_id, '_virtual') == 'yes' ? 'checked' : '',
-                                            'value'     => $this->val($var_id, '_virtual') ? $this->val($var_id, '_virtual') : 'no',
-                                            'data'      => ['yes', 'no']
-                                        ],
-                                        [
-                                            'key' => '_downloadable',
-                                            'label' => 'Downloadable',
-                                            'checked'   => $this->val($var_id, '_downloadable') == 'yes' ? 'checked' : '',
-                                            'value'     => $this->val($var_id, '_downloadable') ? $this->val($var_id, '_downloadable') : 'no',
-                                            'data'      => ['yes', 'no']
-                                        ],
-                                        [
-                                            'key' => '_manage_stock',
-                                            'label' => 'Manage Stock?',
-                                            'checked'   => $this->val($var_id, '_manage_stock') == 'yes' ? 'checked' : '',
-                                            'value'     => $this->val($var_id, '_manage_stock') ? $this->val($var_id, '_manage_stock') : 'no',
-                                            'data'      => ['yes', 'no']
-                                        ],
-                                    ],
-                                ]);
-                                ?>
-
-                                </div> <!-- WDA ROW ENDS HERE -->
-                                
-
-                                <div class="wdass__row">
-
-                                <?php
-                                /*------------------------------------------------
-                                *  Variable Regular Price
-                                *------------------------------------------------*/
-                                $this->field([
-                                    'label' => 'Regular Price',
-                                    'type'  => 'text',
-                                    'value' => $this->val($var_id, '_regular_price'),
-                                    'id'    => '_regular_price',
-                                    'class' => 'wdass__variable-input'
-                                ]);
-
-
-                                /*------------------------------------------------
-                                *  Variable Sale Price
-                                *------------------------------------------------*/
-                                $this->field([
-                                    'label' => 'Sale Price',
-                                    'type'  => 'text',
-                                    'value' => $this->val($var_id, '_sale_price'),
-                                    'id'    => '_sale_price',
-                                    'class' => 'wdass__variable-input'
-                                ]);
-                                ?>
-
-                                </div> <!-- WDA ROW ENDS HERE -->
-
-                                
-                                <div class="wdass__row">
-                                    
-                                <?php
-                                /*------------------------------------------------
-                                *  Stock Status
-                                *------------------------------------------------*/
-                                $this->field([
-                                    'label' => 'Stock Status',
-                                    'class' => 'wdass_field',
-                                    'type' => 'select',
-                                    'value' => $this->val($var_id, '_stock_status'),
-                                    'id' => '_stock_status',
-                                    'args'  => [
-                                        'instock'       => 'In Stock',
-                                        'outofstock'    => 'Out of Stock',
-                                        'onbackorder'   => 'On Backorder'
-                                    ],
-                                ]);
-
-
-                                /*------------------------------------------------
-                                *  Stock Quantity
-                                *------------------------------------------------*/
-                                $this->field([
-                                    'label' => 'Stock Quantity',
-                                    'class' => 'wdass_field',
-                                    'type' => 'number',
-                                    'value' => $this->val($var_id, '_stock'),
-                                    'id' => '_stock',
-                                    'field_class' => $this->val($var_id, '_manage_stock') == 'yes' ? '' : 'wdass_hide',
-                                ]);
-                                ?>
-
-                                </div> <!-- WDA ROW ENDS HERE -->
-                                
-                                <div class="wdass__row">
-                                <?php
-                                $this->field([
-                                    'label' => 'Description',
-                                    'type' => 'textarea',
-                                    'value' => $this->val($var_id, 'post_content'),
-                                    'id' => 'post_content'
-                                ]);
-                                ?>
-                                </div>
-                            </div> <!-- Single variation container ends here -->
-
-                        </li> <!-- The li tag ends here -->
-                        
-                        <?php
-                    }
-                    
-                    
-                    ?>
-                    </ul> <!-- The ul tag ends here -->
-                </div> <?php
+                    <h3>Variable feature is available only to premium version.</h3>
+                    <span class="wdass__premium-notice">Unlock variable features by <a href="//webdevadvisor.com">Upgrading to premium version</a></span>
+                </div>
+                <?php
             }
             ?>
 
@@ -693,7 +513,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 *  Comment/Review Status Switch
                 *------------------------------------------------*/
                 $this->field([
-                    'label' => 'Comment Status',
+                    'label' => 'Review Status',
                     'type' => 'radio',
                     'value' => $this->val($post->ID, 'comment_status'),
                     'id' => 'comment_status',

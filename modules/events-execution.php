@@ -1,6 +1,9 @@
 <?php
 
 
+defined( 'ABSPATH' ) || exit;
+
+
 if ( ! class_exists( 'WDASS__Run_Events' ) ) {
     class WDASS__Run_Events {
 

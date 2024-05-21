@@ -60,9 +60,9 @@
             this.metaBox.on( 'click', '.wdass__meta-menu', '', this.switchTab.bind(this) );
 
             // Attachment Handler
-            this.mediaField.on( 'click', '.wdass__add-media.wdass__parent-input', 'parent', this.upload.bind(this) );
-            this.mediaField.on( 'click', '.wdass__add-media.wdass__variable-input', 'variable', this.upload.bind(this) );
-            this.mediaField.on( 'click', '.wdass__remove-media', '', this.clearUpload.bind(this) );
+            // this.mediaField.on( 'click', '.wdass__add-media.wdass__parent-input', 'parent', this.upload.bind(this) );
+            // this.mediaField.on( 'click', '.wdass__add-media.wdass__variable-input', 'variable', this.upload.bind(this) );
+            // this.mediaField.on( 'click', '.wdass__remove-media', '', this.clearUpload.bind(this) );
 
             // Data Handler
             this.metaBox.on( 'change', '.wdass__parent-input', 'parent', this.data.bind(this) );

@@ -17,11 +17,6 @@
 *-------------------------------------------*/
 defined( 'ABSPATH' ) || exit;
 
-if ( !function_exists( 'add_action' ) ) {
-	echo 'Hi there!  I\'m just a plugin, not much I can do when called directly.';
-	exit;
-}
-
 
 /*-------------------------------------------
 *  Plugin Version
@@ -47,25 +42,12 @@ define( 'WDASS_ROOT_DIR', plugin_dir_path( __FILE__ ) );
 define( 'WDASS_ROOT_URL', plugin_dir_url( __FILE__ )) ;
 
 
-// /*-------------------------------------------
-// *  Plugin Prefix
-// *-------------------------------------------*/
-// define( 'WDASS_PREFIX', 'wdass' ) ;
-
-
-/*-------------------------------------------
-*  Delete Limit
-*-------------------------------------------*/
-// define( 'WDASS_DELETE_LIMIT', 10000 );
-
-
 /*-------------------------------------------
 *  Funtions
 *-------------------------------------------*/
+require_once( WDASS_ROOT_DIR . 'functions/wdass-functions.php' );
 require_once( WDASS_ROOT_DIR . 'functions/admin-settings-template.php' );
-require_once( WDASS_ROOT_DIR . 'functions/activation-actions.php' );
 require_once( WDASS_ROOT_DIR . 'functions/script-enqueue.php' );
-require_once( WDASS_ROOT_DIR . 'functions/admin-menu.php' );
 
 
 /*-------------------------------------------
@@ -78,14 +60,19 @@ require_once( WDASS_ROOT_DIR . 'classes/class-settings-fields.php' );
 /*-------------------------------------------
 *  Modules
 *-------------------------------------------*/
-require_once( WDASS_ROOT_DIR . 'modules/action-schedules.php' );
+require_once( WDASS_ROOT_DIR . 'modules/admin-menu.php' );
+require_once( WDASS_ROOT_DIR . 'modules/activation-actions.php' );
 require_once( WDASS_ROOT_DIR . 'modules/schedule-settings.php' );
+require_once( WDASS_ROOT_DIR . 'modules/action-schedules.php' );
+
+// if ( wdass_is_woocommerce_activated() ) {
+// 	require_once( WDASS_ROOT_DIR . 'modules/meta-boxes.php' );
+// 	require_once( WDASS_ROOT_DIR . 'modules/events-execution.php' );
+// }
+
 require_once( WDASS_ROOT_DIR . 'modules/meta-boxes.php' );
 require_once( WDASS_ROOT_DIR . 'modules/events-execution.php' );
-require_once( WDASS_ROOT_DIR . 'modules/license.php' );
-require_once( WDASS_ROOT_DIR . 'modules/update-checker.php' );
 
-// if ( is_plugin_active( 'woocommerce/woocommerce.php' ) ) {}
 
 /*-------------------------------------------
 *  Plugin Activation Actions

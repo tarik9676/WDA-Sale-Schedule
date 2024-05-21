@@ -1,5 +1,8 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
+
 function wdass_scheduled_events () {
 	global $wpdb;
 	

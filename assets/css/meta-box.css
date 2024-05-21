@@ -1,5 +1,5 @@
 :root {
-    --wda-border: 1px solid #dbdbdb88;
+    --wda-border: 2px solid #dfdede8c;
     --wda-dashed-border: 2px dashed #d1d1d1e5;
 }
 
@@ -15,7 +15,7 @@
 }
 
 #_wdass_event_data .wdass__meta-container {
-    padding: 5px 20px;
+    padding: 5px 20px 20px 20px;
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -64,9 +64,13 @@
     width: 470px !important;
 }
 
-
 .wdass__meta-content .form-field:not(:first-child) {
-    margin-top: 30px;
+    padding-top: 0px;
+}
+
+.wdass__meta-content .form-field:not(:last-child) {
+    padding-bottom: 30px;
+    border-bottom: 1px solid #cfcfcf96;
 }
 
 .post-type-product .tablenav input {
@@ -172,4 +176,32 @@
     text-align: left;
     padding: 10px !important;
     border-bottom: 1px solid #d1d1d1;
+}
+
+.wdass__requres_premium :not(.wdass__premium-notice) {
+    opacity: 0.8;
+}
+
+.wdass__premium-notice {
+    display: block;
+    font-size: 15px;
+    margin-top: 10px;
+}
+
+.wdass__premium-notice a {
+    color: #ff5500;
+}
+
+.wdass__meta-content .form-field {
+    margin-bottom: 30px !important;
+}
+
+.wdass__meta-content > .wdass__media-field {
+    border-bottom: var(--wda-border);
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+}
+
+li[data-menu="variations"] a {
+    display: block;
 }

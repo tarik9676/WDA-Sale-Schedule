@@ -1,5 +1,8 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
+
 if ( !function_exists( 'wdass_admin_settings_template' ) ) {
     function wdass_admin_settings_template ( $page_title, $option_group, $page_slug, $submit_btn = [] ) {
         // check user capabilities

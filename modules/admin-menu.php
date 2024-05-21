@@ -1,5 +1,8 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
+
 /*-------------------------------------------
 *  Creating Custom WordPress Admin Menu
 *-------------------------------------------*/
@@ -17,16 +20,6 @@ function wdass_admin_menu() {
         30                          // Position
     );
 
-	// Schedule Settings
-    // add_submenu_page(
-    //     "wdass-sale-schedule",      // Parent Slug
-    //     "Schedule Settings",        // Page Title
-    //     "Settings",					// Menu Title
-    //     "manage_options",           // Capability
-    //     "wdass-sale-schedule",  // Menu Slug
-    //     "wdass_schedule_settings",	// Callback Function
-    // );
-
 	/*----- Schedule Events -----*/
     add_submenu_page(
         "wdass-sale-schedule",
@@ -35,16 +28,6 @@ function wdass_admin_menu() {
         "manage_options",
         "action-schedules",
         "wdass_scheduled_events",
-    );
-
-	/*----- Plugin License -----*/
-    add_submenu_page(
-        "wdass-sale-schedule",
-        "Plugin License",
-        "License",
-        "manage_options",
-        "wdass-plugin-license",
-        "wdass_plugin_license",
     );
 }
 
@@ -145,60 +128,4 @@ function wdass_settings_init() {
 		)
 	);
 	/*----- ENDS PAGE : Schedule Settings -----*/
-
-
-
-	/*----- PAGE : License -----*/
-	
-	/* Section :  */
-	add_settings_section(
-		'wdass_plugin_license',
-		__( 'License Activation', 'wdass' ),
-        'wdass_plugin_license_section_callback',
-        'wdass-plugin-license',
-		[
-			'before_section' => '',
-			'after_section' => '',
-			'section_class' => '',
-		]
-	);
-	
-	/* Registering License Settings */
-	register_setting( 'wdass_plugin_license', 'wdass_license_key', [
-		'type'				=> 'string',
-		'sanitize_callback'	=> 'sanitize_text_field',
-		'default'			=> NULL
-	]);
-	
-	/* Field : License Key */
-
-	$wdass_license_label = 'License Key';
-	$wdass_custom_args = 'enabled';
-	$wdass_custom_description = 'Enter your premium license key here.';
-
-	$wdass_license_status = get_option( 'wdass_license_status' );
-	if ( wdass_execute_key( $wdass_license_status ) ) {
-		$wdass_license_label = 'License Activated <span class="dashicons dashicons-yes-alt"></span>';
-		$wdass_custom_args = 'disabled';
-		$wdass_custom_description = '<a id="wdass__revoke-license-key" href="javascript:void(0)">Change</a> your license key.';
-	}
-
-	add_settings_field(
-		'wdass_license_key',
-	    __( $wdass_license_label, 'wdass' ),
-		'wdass_plugin_license_field_callback',
-		'wdass-plugin-license',
-		'wdass_plugin_license',
-		array(
-			'type'			=> 'text',
-			'option_group'	=> 'wdass_plugin_license',
-			'option_name'	=> 'wdass_license_key',
-			'label_for'		=> 'wdass_license_key',
-			'class'			=> 'wdass_license_key',
-			'custom_arg'	=> $wdass_custom_args,
-            'description'	=> __( $wdass_custom_description, 'wdass' ),
-		)
-	);
-
-	/*----- ENDS PAGE : License -----*/
 }

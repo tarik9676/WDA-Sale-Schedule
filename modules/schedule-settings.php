@@ -1,5 +1,8 @@
 <?php
 
+defined( 'ABSPATH' ) || exit;
+
+
 function wdass_admin_page () {
 	wdass_admin_settings_template (
 		get_admin_page_title(),
@@ -9,7 +12,7 @@ function wdass_admin_page () {
 }
 
 function wdass_section_callback_general_settings () {
-    echo "Schedule Settings Section";
+    echo "";
     // print_r( get_option( 'wdass_general_settings' ) );
 }
 

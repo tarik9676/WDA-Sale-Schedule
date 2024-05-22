@@ -187,6 +187,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
                         'completed' => 'Completed',
                     ]
                 ]);
+
+                echo '<hr class="wdass__spacer">';
                 
                 ?>
                 <p class="form-field ">
@@ -194,6 +196,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     <input class="wdass_field " type="date" name="wdass_schedule_date" id="wdass_schedule_date" value="<?php echo $this->existent['schedule_date']; ?>" />
                     <input class="wdass_field" type="time" name="wdass_schedule_time" id="wdass_schedule_time" value="<?php echo $this->existent['schedule_time']; ?>" />
                 </p>
+                
+                <hr class="wdass__spacer">
                 <?php
 
 
@@ -209,6 +213,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     ],
                     'field_class' => 'wdass__requres_premium'
                 ]);
+
+                echo '<hr class="wdass__spacer">';
 
 
                 /*------------------------------------------------
@@ -246,6 +252,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     ],
                 ]);
 
+                echo '<hr class="wdass__spacer">';
+
                 /*------------------------------------------------
                 *  Post Title
                 *------------------------------------------------*/
@@ -257,7 +265,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     'class' => 'wdass__parent-input',
                 ]);
 
-                echo "<hr>";
+                echo '<hr class="wdass__spacer">';
                 
                 
                 /*------------------------------------------------
@@ -271,6 +279,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     'class' => 'wdass__parent-input',
                     'field_class' => 'show_if_simple show_if_grouped show_if_external',
                 ]);
+
+                echo '<hr class="wdass__spacer wdass_hide show_if_simple show_if_grouped show_if_external">';
                 
                 
                 /*------------------------------------------------
@@ -285,6 +295,12 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     'field_class' => 'show_if_simple show_if_grouped show_if_external'
                 ]);
 
+                echo '<hr class="wdass__spacer show_if_simple show_if_grouped show_if_external">';
+
+                // echo '<hr class="wdass__devider wdass_hide show_if_simple show_if_grouped show_if_external">';
+
+                // echo '<hr class="wdass__spacer">';
+
                 
                 /*------------------------------------------------
                 *  Product thumbnail
@@ -296,6 +312,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     'class'     => 'wdass__parent-input',
                     'field_class'=> 'wdass__requres_premium'
                 ]);
+
+                echo '<hr class="wdass__devider">';
 
                 ?>
 
@@ -336,7 +354,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
 
                 <span class="wdass__premium-notice">Unlock this feature by <a href="//webdevadvisor.com">Upgrading to premium version</a></span>
                 
-                <hr style="margin-top: 20px;">
+                <hr class="wdass__spacer">
                 
                 <h4>Tags</h4>
                 <?php
@@ -383,7 +401,9 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     'value' => $this->val($post->ID, '_sku'),
                     'id'    => '_sku',
                     'class' => 'wdass__parent-input'
-                ]);                
+                ]);
+
+                echo '<hr class="wdass__spacer">';
                 
 
                 /*------------------------------------------------
@@ -401,7 +421,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
                             'checked' => $this->val($post->ID, '_manage_stock') == 'yes' ? 'checked' : '',
                             'value' => $this->val($post->ID, '_manage_stock') == 'yes' ? 'yes' : 'no'
                         ]
-                    ]
+                    ],
+                    'field_class' => 'show_if_simple show_if_grouped show_if_external'
                 ]);
                 
                 
@@ -416,6 +437,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     'class' => 'wdass__parent-input',
                     'field_class' => $this->val($post->ID, '_manage_stock') == 'yes' ? '' : 'wdass_hide',
                 ]);
+
+                echo '<hr class="wdass__spacer">';
                 
                 
                 /*------------------------------------------------
@@ -485,7 +508,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
             if ( $product->is_type( 'variable' ) ) {
                 ?>
                 <div class="wdass__meta-content hide" data-container="variations">
-                    <h3>Variable feature is available only to premium version.</h3>
+                    <h3>Variable features are available only to the premium version.</h3>
                     <span class="wdass__premium-notice">Unlock variable features by <a href="//webdevadvisor.com">Upgrading to premium version</a></span>
                 </div>
                 <?php
@@ -507,6 +530,9 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     'id'    => 'post_name',
                     'class' => 'wdass__parent-input'
                 ]);
+                
+
+                echo '<hr class="wdass__spacer">';
 
 
                 /*------------------------------------------------
@@ -654,39 +680,39 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 *  Adding generic & meta data together
                 *  And assigning to entire_data > original
                 *-----------------------------------------------------*/
-                $event_data[ 'original' ][ $post_ID ] = array_merge( $parent_post_data, $parent_meta_data );
+                // $event_data[ 'original' ][ $post_ID ] = array_merge( $parent_post_data, $parent_meta_data );
 
-                $product_categories = wp_get_post_terms($post_ID, 'product_cat', array('fields' => 'ids'));
-                $product_tags = wp_get_post_terms($post_ID, 'product_tag', array('fields' => 'ids'));
+                // $product_categories = wp_get_post_terms($post_ID, 'product_cat', array('fields' => 'ids'));
+                // $product_tags = wp_get_post_terms($post_ID, 'product_tag', array('fields' => 'ids'));
 
-                $event_data[ 'original' ][ $post_ID ][ 'terms' ] = json_encode([
-                    'product_cat' => $product_categories,
-                    'product_tag' => $product_tags
-                ]);
-
-
-                $variations_modified_object = $parent_modified_data;
-                unset( $variations_modified_object[ $post_ID ] );
+                // $event_data[ 'original' ][ $post_ID ][ 'terms' ] = json_encode([
+                //     'product_cat' => $product_categories,
+                //     'product_tag' => $product_tags
+                // ]);
 
 
-                /*---------------------------------------------
-                *  Get original variation data if has any
-                *----------------------------------------------*/
-                if ( count( $variations_modified_object ) ) {
-                    foreach ( $variations_modified_object as $var_id => $var_obj ) {
-                        $variable_post_data = get_post ( $var_id, ARRAY_A );
-                        $variable_meta_data = get_post_meta( $var_id );
+                // $variations_modified_object = $parent_modified_data;
+                // unset( $variations_modified_object[ $post_ID ] );
 
-                        $this_variation_obj = [];
 
-                        foreach ( $var_obj as $var_key => $var_val ) {
-                            $this_variation_obj[ $var_key ] = $variable_post_data[ $var_key ];
-                            $this_variation_obj[ $var_key ] = $variable_meta_data[ $var_key ][ 0 ];
-                        }
+                // /*---------------------------------------------
+                // *  Get original variation data if has any
+                // *----------------------------------------------*/
+                // if ( count( $variations_modified_object ) ) {
+                //     foreach ( $variations_modified_object as $var_id => $var_obj ) {
+                //         $variable_post_data = get_post ( $var_id, ARRAY_A );
+                //         $variable_meta_data = get_post_meta( $var_id );
 
-                        $event_data[ 'original' ][ $var_id ] = $this_variation_obj;
-                    }
-                }
+                //         $this_variation_obj = [];
+
+                //         foreach ( $var_obj as $var_key => $var_val ) {
+                //             $this_variation_obj[ $var_key ] = $variable_post_data[ $var_key ];
+                //             $this_variation_obj[ $var_key ] = $variable_meta_data[ $var_key ][ 0 ];
+                //         }
+
+                //         $event_data[ 'original' ][ $var_id ] = $this_variation_obj;
+                //     }
+                // }
 
 
                 /*-----------------------------------------------------
@@ -722,7 +748,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 *  Also save new meta modified data
                 *-----------------------------------------------------*/
                 $this->save_group( $wpdb, $last_event_id, 'modified', $event_data['modified'] );
-                $this->save_group( $wpdb, $last_event_id, 'original', $event_data['original'] );
+                // $this->save_group( $wpdb, $last_event_id, 'original', $event_data['original'] );
             } else {
                 
                 /*-----------------------------------------------------
@@ -817,7 +843,5 @@ class WDASS__meta_boxes extends WDASS_HTML {
             return $this->meta_array[$id][$key] == '404' || empty( $this->meta_array[$id][$key] ) ? '' : $this->meta_array[$id][$key];
         }
     }
-
-    // private function 
 
 }

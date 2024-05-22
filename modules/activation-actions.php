@@ -30,7 +30,7 @@ if ( ! function_exists( 'wdass_activation_actions' ) ) {
             post_id INT(11) NOT NULL,
             type VARCHAR(10) NOT NULL,
             meta_key VARCHAR(255) NOT NULL,
-            content LONGTEXT
+            content LONGTEXT NULL
         ) $charset_collate;";
     
         require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );

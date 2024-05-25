@@ -3,6 +3,9 @@
 defined( 'ABSPATH' ) || exit;
 
 
+/*---------------------------------------------------------
+*  Displaying all the events under 'Events' submenu
+*---------------------------------------------------------*/
 function wdass_scheduled_events () {
 	global $wpdb;
 	
@@ -18,8 +21,6 @@ function wdass_scheduled_events () {
 					<th>Product</th>
 					<th>Schedule Status</th>
 					<th>Schedule Time</th>
-					<!-- <th>Restore Status</th>
-					<th>Restore Time</th> -->
 				</tr>
 			</thead>
 			<tbody>

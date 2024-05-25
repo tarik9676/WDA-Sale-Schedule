@@ -2,28 +2,47 @@
 
 defined( 'ABSPATH' ) || exit;
 
-if ( ! function_exists( 'wdass_meta_boxes' ) ) {
+if ( ! function_exists( 'wdass_meta_boxes' ) ) :
     
-    /*-------------------------------------------
-    *  Calls the class on the post edit screen.
-    *-------------------------------------------*/
+    /*------------------------------------------------------
+    *  Calling the class on the post edit screen.
+    *------------------------------------------------------*/
     function wdass_meta_boxes () {
         new WDASS__meta_boxes();
     }
 
-
+    
+    /*------------------------------------------------------
+    *  Calling meta box caller only for admin
+    *------------------------------------------------------*/
     if ( is_admin() ) {
         add_action( 'load-post.php',     'wdass_meta_boxes' );
     }
-}
 
+endif;
+
+
+if ( ! class_exists( 'WDASS__meta_boxes' ) ) :
 
 class WDASS__meta_boxes extends WDASS_HTML {
 
-    private $event_generic_data = [];
-    private $meta_array = [];
+    
+    /*------------------------------------------------------
+    *  Pre assigning event object
+    *------------------------------------------------------*/
+    private $event_fields = [];
 
-    private $empty_meta_data_set = [
+    
+    /*------------------------------------------------------
+    *  $meta_object carries meta key & value 
+    *------------------------------------------------------*/
+    private $meta_object = [];
+
+    
+    /*------------------------------------------------------
+    *  Pre defining fields / placeholder
+    *------------------------------------------------------*/
+    private $pre_defined_fields = [
         'post_title'        => '404',
         'post_status'       => 'publish',
         'post_name'         => '404',
@@ -41,6 +60,10 @@ class WDASS__meta_boxes extends WDASS_HTML {
         '_sku'              => '404'
     ];
 
+    
+    /*------------------------------------------------------
+    *  Pre defining existing event object
+    *------------------------------------------------------*/
     private $existent = [
         'id'                => 0,
         'schedule_status'   => 'inactive',
@@ -49,8 +72,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
     ];
     
     /*-------------------------------------------
-    * Hook into the appropriate actions when
-    * the class is constructed.
+    *  Hook into the appropriate actions when
+    *  the class is constructed.
     *-------------------------------------------*/
     public function __construct() {
         add_action( 'add_meta_boxes', [ $this, 'add_meta_box' ] );
@@ -59,22 +82,17 @@ class WDASS__meta_boxes extends WDASS_HTML {
 
 
     /*-------------------------------------------
-    *  Adds the meta box container.
+    *  Adding the meta box container.
     *-------------------------------------------*/
     public function add_meta_box( $post_type ) {
-
-        /*----- Limit meta box to certain post types -----*/
-
-        $allowed_types = ['product'];
- 
-        if ( in_array( $post_type, $allowed_types ) ) {
+        if ( in_array( $post_type, ['product'] ) ) {
             add_meta_box(
-                '_wdass_event_data',                    // Meta_Box_ID
-                __( 'Schedule Event Data', 'wdass' ),   // Title
-                [ $this, 'meta_box_html' ],                 // Callback_Function
-                $post_type,                                 // Screen (Post Type)
-                'normal',                                   // Position ('normal', 'side', and 'advanced')
-                'high'                                      // Priority ('high', 'core', 'default', or 'low')
+                '_wdass_event_data',
+                __( 'Schedule Event Data', 'wdass' ), 
+                [ $this, 'meta_box_html' ],
+                $post_type,
+                'normal',
+                'high'
             );
         }
     }
@@ -87,9 +105,12 @@ class WDASS__meta_boxes extends WDASS_HTML {
         global $wpdb;
         $table_events       = $wpdb->prefix . 'wdass_events';
         $table_eventmeta    = $wpdb->prefix . 'wdass_eventmeta';
+        
+
+        /*----- Pre assinging parent data -----*/
 
         $parent_empty_data = [];
-        $parent_empty_data[ $post->ID ] = $this->empty_meta_data_set;
+        $parent_empty_data[ $post->ID ] = $this->pre_defined_fields;
         $parent_empty_data[ $post->ID ]['terms'] = '404';
         
 
@@ -110,53 +131,34 @@ class WDASS__meta_boxes extends WDASS_HTML {
             WHERE e.object_id = $post->ID AND m.type = 'modified';"
         );
 
-        /*------------------------------------------------
-        *  Organizing data (meta_key => content)
-        *  Using event_meta() method
-        *------------------------------------------------*/
-        $obj = $this->get_values($event_meta_sql);
-        $this->meta_array = $obj;
-
-
         /*----------------------------------------------------
-        *  Getting event status & time
-        *----------------------------------------------------*/
-        $event_sql = $wpdb->get_results(
-            "SELECT * FROM $table_events
-            WHERE object_id = $post->ID;"
-        );
+        *  get_values() stores organized data to meta_object
+        *  which helps val() to distribute
+        *-----------------------------------------------------*/
+        $this->get_values( $event_meta_sql );
+
+
+        /*----------------------------------------------------------------
+        *  Storing existing event id, status & time to existent object
+        *----------------------------------------------------------------*/
+        $event_sql = $wpdb->get_results("SELECT * FROM $table_events WHERE object_id = $post->ID;");
 
         if ( count($event_sql) ) {
             $this->existent['id']               = $event_sql[0]->id;
             $this->existent['schedule_status']  = $event_sql[0]->schedule_status;
             $this->existent['schedule_date']    = $event_sql[0]->schedule_date;
             $this->existent['schedule_time']    = $event_sql[0]->schedule_time;
-
-            // $this->empty_meta_data_set['terms'] = json_decode( $this->val($post->ID, 'terms'), true );
+            
+            /*----- Also adding tags & categories if an event exists -----*/
             $parent_empty_data[ $post->ID ]['terms'] = $this->val($post->ID, 'terms');
         }
-
-
-        /*------------------------------------------------
-        *  Testing Data format
-        *------------------------------------------------*/
-        echo '<pre>';
-        // print_r( $this->existent['status'] );
-        // print_r( get_post_meta( $post->ID )['_product_attributes'][0] );
-        // echo '<br><br>';
-        // foreach ( $variations as $key => $value ) {
-        //     print_r( $value );
-        //     echo '<br>--------------------------------<br>';
-        // }
-        echo '</pre>';
 
         ?>
 
         <ul class="sidebar">
             <?php
             /*------------------------------------------------
-            *  Event data tabs by WDASS_HTML
-            *  To organize fields
+            *  Meta Box Tabs
             *------------------------------------------------*/
             $this->tabs([
                 ['name' => 'Date-Time & Status', 'id' => 'schedule-settings'],
@@ -296,10 +298,6 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 ]);
 
                 echo '<hr class="wdass__spacer show_if_simple show_if_grouped show_if_external">';
-
-                // echo '<hr class="wdass__devider wdass_hide show_if_simple show_if_grouped show_if_external">';
-
-                // echo '<hr class="wdass__spacer">';
 
                 
                 /*------------------------------------------------
@@ -469,10 +467,10 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 *  Product Long Description
                 *------------------------------------------------*/
                 $description_editor_settings = array(
-                    'media_buttons' => true,                // This setting removes the media button.
-                    'textarea_name' => 'wdass_' . $post->ID . '_post_content',  // Set custom name.
-                    'textarea_rows' => 30,                  // Determine the number of rows.
-                    'quicktags' => true,                    // Remove view as HTML button.
+                    'media_buttons' => true,
+                    'textarea_name' => 'wdass_' . $post->ID . '_post_content',
+                    'textarea_rows' => 30,
+                    'quicktags' => true
                 );
                 $long_editor_content = $this->val($post->ID, 'post_content') ? $this->val($post->ID, 'post_content') : '';
                 wp_editor( $long_editor_content, 'wdass_' . $post->ID . '_post_content', $description_editor_settings );
@@ -499,10 +497,9 @@ class WDASS__meta_boxes extends WDASS_HTML {
             </div>
 
             
-            <!-- PRODUCT VARIABLES -->
+            <!-- VARIABLE PRODUCTS -->
             <?php
             /*------------------------------------------------
-            *  Variable Items Data For Variable Products
             *  If current product is a variable Type
             *------------------------------------------------*/
             if ( $product->is_type( 'variable' ) ) {
@@ -557,13 +554,21 @@ class WDASS__meta_boxes extends WDASS_HTML {
 
         <!-- The hidden input which stores parent product modified data as JSON string -->
 
+        
+        <!-------------------------------------------------------------------
+        *  This hidden input stores modified data as JSON string
+        -------------------------------------------------------------------->
         <input
             type="hidden"
             id="wdass_parent_data"
-            name="wdass_parent_data" 
+            name="wdass_parent_data"
             value='<?php echo json_encode( $parent_empty_data ); ?>'
         />
 
+
+        <!-------------------------------------------------------------------
+        *  This hidden input stores existing event data as JSON string
+        -------------------------------------------------------------------->
         <input
             type="hidden"
             name="wdass_existing_event"
@@ -596,24 +601,16 @@ class WDASS__meta_boxes extends WDASS_HTML {
         }
 
         if ( $_SERVER["REQUEST_METHOD"] == "POST" && $update ) {
-            $this->event_generic_data['schedule_status'] = !empty( $_POST['wdass_schedule_status'] ) ? sanitize_text_field( $_POST['wdass_schedule_status'] ) : 'inactive';
+            $this->event_fields['schedule_status'] = !empty( $_POST['wdass_schedule_status'] ) ? sanitize_text_field( $_POST['wdass_schedule_status'] ) : 'inactive';
 
-            if ( $this->event_generic_data['schedule_status'] == 'inactive' ) {
+            if ( $this->event_fields['schedule_status'] !== 'pending' ) {
                 return;
             }
 
-            // $this->event_generic_data['restore_status'] = !empty( $_POST['wdass_restore_status'] ) ? sanitize_text_field( $_POST['wdass_restore_status'] ) : 'no_restore';
-
             date_default_timezone_set( get_option( 'wdass_schedule_timezone', "GMT+0" ) );
             
-            // $this->event_generic_data['schedule_point'] = sanitize_text_field( $_POST['wdass_schedule_point'] );
-            // $this->event_generic_data['restore_point']  = !empty( $_POST['wdass_restore_point'] ) ? sanitize_text_field( $_POST['wdass_restore_point'] ) : '';
-
-            $this->event_generic_data['schedule_date'] = sanitize_text_field( $_POST['wdass_schedule_date'] );
-            $this->event_generic_data['schedule_time'] = sanitize_text_field( $_POST['wdass_schedule_time'] );
-            
-            // $this->event_generic_data['restore_date'] = sanitize_text_field( $_POST['wdass_restore_date'] );
-            // $this->event_generic_data['restore_time'] = sanitize_text_field( $_POST['wdass_restore_time'] );
+            $this->event_fields['schedule_date'] = sanitize_text_field( $_POST['wdass_schedule_date'] );
+            $this->event_fields['schedule_time'] = sanitize_text_field( $_POST['wdass_schedule_time'] );
             
             $existent = json_decode( stripslashes( $_POST['wdass_existing_event'] ), true );
             
@@ -624,16 +621,12 @@ class WDASS__meta_boxes extends WDASS_HTML {
 
             $event_data = [];
             $event_data['modified'] = [];
-            $event_data['original'] = [];
 
 
             /*-------------------------------------------
             *  Getting modified data to be scheduled
             *-------------------------------------------*/
             $parent_modified_data = json_decode( stripslashes( $_POST['wdass_parent_data'] ), true );
-
-            // $event_data['modified']['kategories']   = !empty( $_POST['wdass_term_cats'] ) ? stripslashes( $_POST['wdass_term_cats'] ) : '404';
-            // $event_data['modified']['tags']         = !empty( $_POST['wdass_term_tags'] ) ? stripslashes( $_POST['wdass_term_tags'] ) : '404';
 
             $event_data[ 'modified' ] = $parent_modified_data;
             $event_data[ 'modified' ][ $post_ID ][ 'post_excerpt' ] = !empty($_POST['wdass_' . $post_ID . '_post_excerpt']) ? stripslashes($_POST['wdass_' . $post_ID . '_post_excerpt']) : '404';
@@ -677,45 +670,6 @@ class WDASS__meta_boxes extends WDASS_HTML {
 
 
                 /*-----------------------------------------------------
-                *  Adding generic & meta data together
-                *  And assigning to entire_data > original
-                *-----------------------------------------------------*/
-                // $event_data[ 'original' ][ $post_ID ] = array_merge( $parent_post_data, $parent_meta_data );
-
-                // $product_categories = wp_get_post_terms($post_ID, 'product_cat', array('fields' => 'ids'));
-                // $product_tags = wp_get_post_terms($post_ID, 'product_tag', array('fields' => 'ids'));
-
-                // $event_data[ 'original' ][ $post_ID ][ 'terms' ] = json_encode([
-                //     'product_cat' => $product_categories,
-                //     'product_tag' => $product_tags
-                // ]);
-
-
-                // $variations_modified_object = $parent_modified_data;
-                // unset( $variations_modified_object[ $post_ID ] );
-
-
-                // /*---------------------------------------------
-                // *  Get original variation data if has any
-                // *----------------------------------------------*/
-                // if ( count( $variations_modified_object ) ) {
-                //     foreach ( $variations_modified_object as $var_id => $var_obj ) {
-                //         $variable_post_data = get_post ( $var_id, ARRAY_A );
-                //         $variable_meta_data = get_post_meta( $var_id );
-
-                //         $this_variation_obj = [];
-
-                //         foreach ( $var_obj as $var_key => $var_val ) {
-                //             $this_variation_obj[ $var_key ] = $variable_post_data[ $var_key ];
-                //             $this_variation_obj[ $var_key ] = $variable_meta_data[ $var_key ][ 0 ];
-                //         }
-
-                //         $event_data[ 'original' ][ $var_id ] = $this_variation_obj;
-                //     }
-                // }
-
-
-                /*-----------------------------------------------------
                 *  Create new event
                 *-----------------------------------------------------*/
 
@@ -723,9 +677,9 @@ class WDASS__meta_boxes extends WDASS_HTML {
                     $table_events,
                     [
                         'object_id'         => $post_ID,
-                        'schedule_status'   => $this->event_generic_data['schedule_status'],
-                        'schedule_date'     => $this->event_generic_data['schedule_date'],
-                        'schedule_time'     => $this->event_generic_data['schedule_time'],
+                        'schedule_status'   => $this->event_fields['schedule_status'],
+                        'schedule_date'     => $this->event_fields['schedule_date'],
+                        'schedule_time'     => $this->event_fields['schedule_time'],
                         'restore_status'    => 'no_restore',
                         'restore_date'      => '',
                         'restore_time'      => ''
@@ -748,7 +702,6 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 *  Also save new meta modified data
                 *-----------------------------------------------------*/
                 $this->save_group( $wpdb, $last_event_id, 'modified', $event_data['modified'] );
-                // $this->save_group( $wpdb, $last_event_id, 'original', $event_data['original'] );
             } else {
                 
                 /*-----------------------------------------------------
@@ -758,9 +711,9 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 $wpdb->update(
                     $table_events,
                     [
-                        'schedule_status'   => $this->event_generic_data['schedule_status'],
-                        'schedule_date'     => $this->event_generic_data['schedule_date'],
-                        'schedule_time'     => $this->event_generic_data['schedule_time'],
+                        'schedule_status'   => $this->event_fields['schedule_status'],
+                        'schedule_date'     => $this->event_fields['schedule_date'],
+                        'schedule_time'     => $this->event_fields['schedule_time'],
                         'restore_status'    => 'no_restore',
                         'restore_date'      => '',
                         'restore_time'      => ''
@@ -777,12 +730,20 @@ class WDASS__meta_boxes extends WDASS_HTML {
         }
     }
 
+
+    /*----------------------------------------------------
+    *  Distributing each product's data to insert
+    *----------------------------------------------------*/
     private function save_group ( $wpdb, $event_id, $type, $data ) {
         foreach ( $data as $post_id => $post_data ) {
             $this->insert_single_post( $wpdb, $event_id, $post_id, $type, $post_data );
         }
     }
 
+
+    /*-------------------------------------------
+    *  Adding each new meta to DB
+    *-------------------------------------------*/
     private function insert_single_post ( $wpdb, $event_id, $post_id, $type, $data ) {
         foreach ( $data as $meta_key => $value ) {
             $wpdb->insert(
@@ -799,12 +760,20 @@ class WDASS__meta_boxes extends WDASS_HTML {
         }
     }
 
+
+    /*----------------------------------------------------
+    *  Distributing each product's data to update
+    *----------------------------------------------------*/
     private function update_modified_data ( $wpdb, $event_id, $modified_data ) {
         foreach ( $modified_data as $post_id => $post_data ) {
             $this->update_modified_meta( $wpdb, $event_id, $post_id, $post_data );
         }
     }
 
+
+    /*----------------------------------------------------
+    *  Updating each meta fields
+    *----------------------------------------------------*/
     private function update_modified_meta ( $wpdb, $event_id, $post_id, $post_data ) {
         foreach ( $post_data as $meta_key => $value ) {
 
@@ -828,6 +797,10 @@ class WDASS__meta_boxes extends WDASS_HTML {
         }
     }
 
+
+    /*------------------------------------------------------
+    *  get_values() searches one meta field from meta_object
+    *------------------------------------------------------*/
     private function get_values ( $sql_data ) {
         $results = [];
 
@@ -835,13 +808,19 @@ class WDASS__meta_boxes extends WDASS_HTML {
             $results[ $value->post_id ][ $value->meta_key ] = $value->content;
         }
 
-        return $results;
+        $this->meta_object = $results;
     }
 
+
+    /*------------------------------------------------------
+    *  val() searches one meta field from meta_object
+    *------------------------------------------------------*/
     private function val ( $id, $key ) {
-        if ( array_key_exists( $id, $this->meta_array ) ) {
-            return $this->meta_array[$id][$key] == '404' || empty( $this->meta_array[$id][$key] ) ? '' : $this->meta_array[$id][$key];
+        if ( array_key_exists( $id, $this->meta_object ) ) {
+            return $this->meta_object[$id][$key] == '404' || empty( $this->meta_object[$id][$key] ) ? '' : $this->meta_object[$id][$key];
         }
     }
 
 }
+
+endif;

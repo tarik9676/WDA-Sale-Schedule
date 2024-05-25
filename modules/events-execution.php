@@ -7,19 +7,15 @@ defined( 'ABSPATH' ) || exit;
 if ( ! class_exists( 'WDASS__Run_Events' ) ) {
     class WDASS__Run_Events {
 
-        /*-------------------------------------------
-        * Hook into the appropriate actions when
-        * the class is constructed.
-        *-------------------------------------------*/
         public function __construct() {
-            add_action( 'init', array( $this, 'check_n_run_events' ) );
+            add_action( 'init', array( $this, 'check_run_events' ) );
         }
     
     
         /*-------------------------------------------
         *  Find & execute pending events
         *-------------------------------------------*/
-        public function check_n_run_events () {
+        public function check_run_events () {
             global $wpdb;
             
             $table_events = $wpdb->prefix . 'wdass_events';
@@ -30,45 +26,18 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
             /*----------------------------------------------------
             *  Getting all pending schedule events from DB
             *----------------------------------------------------*/
-            $schedule_events_sql = $wpdb->get_results(
-                "SELECT * FROM $table_events
-                WHERE schedule_status = 'pending';"
-            );
+            $pending_events_sql = $wpdb->get_results( "SELECT * FROM $table_events WHERE schedule_status = 'pending';" );
 
-            if ( count($schedule_events_sql) ) {
-                foreach ( $schedule_events_sql as $schedule_event ) {
-                    $schedule_time_string = $schedule_event->schedule_date . ' ' . $schedule_event->schedule_time;
+            if ( count( $pending_events_sql ) ) {
+                foreach ( $pending_events_sql as $event ) {
+                    $schedule_time_string = $event->schedule_date . ' ' . $event->schedule_time;
 
                     if ( strtotime( current_time( 'mysql' ) ) > strtotime( $schedule_time_string ) ) {
-                        $this->execute( $wpdb, $schedule_event->object_id, $schedule_event->id, 'modified', 'schedule_status', 'completed' );
+                        $this->execute( $wpdb, $event->object_id, $event->id, 'modified', 'schedule_status', 'completed' );
                     }
 
                 } // Events Table Loop ENDS
             }
-
-
-            // /*----------------------------------------------------
-            // *  Getting all pending restore events from DB
-            // *----------------------------------------------------*/
-            // $restore_events_sql = $wpdb->get_results(
-            //     "SELECT * FROM $table_events
-            //     WHERE restore_status = 'restore_later' OR restore_status = 'restore_now';"
-            // );
-
-            // if ( count($restore_events_sql) ) {
-            //     foreach ( $restore_events_sql as $restore_event ) {
-            //         $restore_time_string = $restore_event->restore_date . ' ' . $restore_event->restore_time;
-
-            //         if ( $restore_event->restore_status == 'restore_now' ) {
-            //             $this->execute( $wpdb, $restore_event->object_id, $restore_event->id, 'original', 'restore_status', 'no_restore' );
-            //         } else if (
-            //             $restore_event->restore_status == 'restore_later'
-            //             && strtotime( current_time( 'mysql' ) ) > strtotime( $restore_time_string )
-            //         ) {
-            //             $this->execute( $wpdb, $restore_event->object_id, $restore_event->id, 'original', 'restore_status', 'no_restore' );
-            //         }
-            //     } // Events Table Loop ENDS
-            // }
         }
 
         private function execute ( $wpdb, $post_id, $event_id, $data_type, $status_key, $status_value ) {
@@ -85,7 +54,7 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
 
             foreach ( $event_meta_sql as $meta ) {
                 $first_character = substr($meta->meta_key, 0, 1);
-
+                
                 if ( $meta->content !== '404' ) {
                     switch ( $first_character ) {
                         case '_':
@@ -131,5 +100,5 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
         }
     }
     
-    $wdass__run_events = new WDASS__Run_Events();
+    new WDASS__Run_Events();
 }

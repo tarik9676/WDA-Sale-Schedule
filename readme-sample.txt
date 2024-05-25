@@ -9,14 +9,18 @@ Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Don't keep yourself awake in the midnight. Automate your sale items. Sale Schedule plugin helps you to publish sales at the perfect time.
+Too much stress on sale day? Relaaaax!!! Prepare sales content a week/month/year ago without affecting your regular content and sales will be live whenever you want.
 
 == Description ==
 
-This is the long description.  No limit, and you can use Markdown (as well as in the following sections).
+WDA Sale Schedule is specially built for woocommerce stores. Using this plugin store admins will be able to schedule contents to be changed at a certain time without loosing regular contents like product title, thumbnail, product status, stock status, stock quantity and much more.
 
-For backwards compatibility, if this section is missing, the full length of the short description will be used, and
-Markdown parsed.
+Let's say, you have product named "Golden Smart Watch" regular priced $400 and you are planning to put it on sale at $350 then you can put a new title in the custom product title field as "Golden Smart Watch | $50 OFF!" and add the sale price too in the custom sale price input field. Also, you've to assign the designed publishing date in the schedule date & time. Which means you don't need to stay focused on the sale day to prepare the sale or no need to hire people to make it done. You can prepare the sale many days/months ago whenever you get some time.
+
+Even though we change main contents by scheduling new contents, we won't loose regular/original contents. You can also add a restoring schedule date & time to restore regular contents automatically.
+
+Let's see which fields can be scheduled...
+
 
 = Available Schedule Fields =
 
@@ -35,7 +39,7 @@ Markdown parsed.
 * Categories (Premium)
 * Tags (Premium)
 
-## Variable Product Features
+= Variable Product Features =
 
 * Regular Price (Premium)
 * Sale Price (Premium)
@@ -45,7 +49,10 @@ Markdown parsed.
 * Stock Management & Quantity (Premium)
 * Stock Status (Premium)
 * Description (Premium)
-* Back Original Data (Premium)
+
+= Important Features =
+
+* Backup Original Data (Premium)
 * Restore Original Data (Premium)
 
 
@@ -65,40 +72,13 @@ No, this plugin requires WooCommerce.
 
 == Screenshots ==
 
-1. This screen shot description corresponds to screenshot-1.(png|jpg|jpeg|gif). Screenshots are stored in the /assets directory.
-2. This is the second screen shot
+1. Schedule settings : Schedule & Restore Switch & Date-Time
+2. Product title, thumbnail, status, prices, Categories & Tags
+3. SKU, Stock Qty, Stock Status
+4. Short & Long Description
+5. Slug & Review Status
 
 == Changelog ==
 
 = 1.0.0 =
 Initial release.
-
-== A brief Markdown Example ==
-
-Markdown is what the parser uses to process much of the readme file.
-
-[markdown syntax]: https://daringfireball.net/projects/markdown/syntax
-
-Ordered list:
-
-1. Some feature
-1. Another feature
-1. Something else about the plugin
-
-Unordered list:
-
-* something
-* something else
-* third thing
-
-Links require brackets and parenthesis:
-
-Here's a link to [WordPress](https://wordpress.org/ "Your favorite software") and one to [Markdown's Syntax Documentation][markdown syntax]. Link titles are optional, naturally.
-
-Blockquotes are email style:
-
-> Asterisks for *emphasis*. Double it up  for **strong**.
-
-And Backticks for code:
-
-`<?php code(); ?>`

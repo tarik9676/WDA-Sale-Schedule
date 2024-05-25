@@ -4,62 +4,6 @@ if ( ! class_exists( 'WDASS_Settings_Field' ) ) {
 	class WDASS_Settings_Field {
 		private $args;
 		private $input_value;
-	
-	
-		/*-------------------------------------------
-		*  Timezone Options
-		*-------------------------------------------*/
-		private $timezones = [
-			'UTC-12'	=> 'UTC-12',
-			'UTC-11.5'	=> 'UTC-11:30',
-			'UTC-11'	=> 'UTC-11',
-			'UTC-10.5'	=> 'UTC-10:30',
-			'UTC-10'	=> 'UTC-10',
-			'UTC-9.5'	=> 'UTC-9:30',
-			'UTC-9'		=> 'UTC-9',
-			'UTC-8.5'	=> 'UTC-8:30',
-			'UTC-8'		=> 'UTC-8',
-			'UTC-7.5'	=> 'UTC-7:30',
-			'UTC-7'		=> 'UTC-7',
-			'UTC-6.5'	=> 'UTC-6:30',
-			'UTC-6'		=> 'UTC-6',
-			'UTC-5.5'	=> 'UTC-5:30',
-			'UTC-5'		=> 'UTC-5',
-			'UTC-4.5'	=> 'UTC-4:30',
-			'UTC-4'		=> 'UTC-4',
-			'UTC-3.5'	=> 'UTC-3:30',
-			'UTC-3'		=> 'UTC-3',
-			'UTC-2.5'	=> 'UTC-2:30',
-			'UTC-2'		=> 'UTC-2',
-			'UTC-1.5'	=> 'UTC-1:30',
-			'UTC-1'		=> 'UTC-1',
-			'UTC-0.5'	=> 'UTC-0:30',
-			'UTC+0'		=> 'UTC+0',
-			'UTC+0.5'	=> 'UTC+0:30',
-			'UTC+1'		=> 'UTC+1',
-			'UTC+1.5'	=> 'UTC+1:30',
-			'UTC+2'		=> 'UTC+2',
-			'UTC+2.5'	=> 'UTC+2:30',
-			'UTC+3'		=> 'UTC+3',
-			'UTC+3.5'	=> 'UTC+3:30',
-			'UTC+4'		=> 'UTC+4',
-			'UTC+4.5'	=> 'UTC+4:30',
-			'UTC+5'		=> 'UTC+5',
-			'UTC+5.5'	=> 'UTC+5:30',
-			'UTC+6'		=> 'UTC+6',
-			'UTC+6.5'	=> 'UTC+6:30',
-			'UTC+7'		=> 'UTC+7',
-			'UTC+7.5'	=> 'UTC+7:30',
-			'UTC+8'		=> 'UTC+8',
-			'UTC+8.5'	=> 'UTC+8:30',
-			'UTC+9'		=> 'UTC+9',
-			'UTC+9.5'	=> 'UTC+9:30',
-			'UTC+10'	=> 'UTC+10',
-			'UTC+10.5'	=> 'UTC+10:30',
-			'UTC+11'	=> 'UTC+11',
-			'UTC+11.5'	=> 'UTC+11:30',
-			'UTC+12'	=> 'UTC+12',
-		];
 
 		private $timezone_api = [
 			"Africa/Abidjan",
@@ -698,11 +642,6 @@ if ( ! class_exists( 'WDASS_Settings_Field' ) ) {
 			switch ( $args['type'] ) {
 				case 'select':
 					$html .= '<select id="{ID}" name="{NAME}">';
-			
-					// foreach ($this->timezones as $key => $val) {
-					// 	$selected = $this->input_value == $key ? 'selected="selected"' : '';
-					// 	$html .= "<option $selected value='$key'>$val</option>";
-					// }
 					foreach ($this->timezone_api as $val) {
 						$selected = $this->input_value == $val ? 'selected="selected"' : '';
 						$html .= "<option $selected value='$val'>" . ucwords( $val ) . "</option>";

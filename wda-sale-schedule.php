@@ -19,18 +19,6 @@ defined( 'ABSPATH' ) || exit;
 
 
 /*-------------------------------------------
-*  Plugin Version
-*-------------------------------------------*/
-define( 'WDASS_VERSION', '1.0.0' );
-
-
-/*-------------------------------------------
-*  Minimum Requred Wordpress version
-*-------------------------------------------*/
-define( 'WDASS_MINIMUM_WP_VERSION', '5.8' );
-
-
-/*-------------------------------------------
 *  Plugin Root Path
 *-------------------------------------------*/
 define( 'WDASS_ROOT_DIR', plugin_dir_path( __FILE__ ) );
@@ -64,12 +52,6 @@ require_once( WDASS_ROOT_DIR . 'modules/admin-menu.php' );
 require_once( WDASS_ROOT_DIR . 'modules/activation-actions.php' );
 require_once( WDASS_ROOT_DIR . 'modules/schedule-settings.php' );
 require_once( WDASS_ROOT_DIR . 'modules/action-schedules.php' );
-
-// if ( wdass_is_woocommerce_activated() ) {
-// 	require_once( WDASS_ROOT_DIR . 'modules/meta-boxes.php' );
-// 	require_once( WDASS_ROOT_DIR . 'modules/events-execution.php' );
-// }
-
 require_once( WDASS_ROOT_DIR . 'modules/meta-boxes.php' );
 require_once( WDASS_ROOT_DIR . 'modules/events-execution.php' );
 

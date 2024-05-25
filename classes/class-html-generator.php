@@ -9,7 +9,11 @@ class WDASS_HTML {
     public function __construct() {
         $this->premium_notice = '<span class="wdass__premium-notice">Unlock this feature by <a href="//webdevadvisor.com">Upgrading to premium version</a></span>';
     }
-
+    
+    
+    /*-------------------------------------------
+    *  Meta box tabs
+    *-------------------------------------------*/
     public function tabs ( $args = [] ) {
         $html = '';
 
@@ -17,15 +21,19 @@ class WDASS_HTML {
             $html .= '<li class="wdass__meta-menu {CLASS}" data-menu="{ID}">{NAME}</li>';
 
             $html = strtr( $html, [
-                '{CLASS}'   => array_key_exists( 'class', $value ) ? esc_attr( $value['class'] ) : '',
-                '{ID}'      => array_key_exists( 'id', $value ) ? esc_attr( $value['id'] ) : str_replace( " ", "-", strtolower($value['name']) ),
+                '{CLASS}'   => array_key_exists( 'class', $value ) ? $value['class'] : '',
+                '{ID}'      => array_key_exists( 'id', $value ) ? $value['id'] : str_replace( " ", "-", strtolower($value['name']) ),
                 '{NAME}'    => $value['name']
             ] );
         }
 
         echo $html;
     }
-
+    
+    
+    /*-------------------------------------------
+    *  Generating select input field
+    *-------------------------------------------*/
     private function select ( $params ) {
         $input = "";
 
@@ -40,7 +48,11 @@ class WDASS_HTML {
 
         return $input;
     }
-
+    
+    
+    /*-------------------------------------------
+    *  Radio input field
+    *-------------------------------------------*/
     private function radio ( $params ) {
         $input = "";
 
@@ -51,7 +63,11 @@ class WDASS_HTML {
 
         return $input;
     }
-
+    
+    
+    /*-------------------------------------------
+    *  Checkbox input field
+    *-------------------------------------------*/
     private function checkbox ( $params ) {
         $input = "";
 
@@ -74,10 +90,13 @@ class WDASS_HTML {
 
         return $input;
     }
-
+    
+    
+    /*-------------------------------------------
+    *  Generating meta fields
+    *-------------------------------------------*/
     public function field ( $params ) {
         $label = '<label><strong>{LABEL}</strong></label>';
-        // $label = '<strong>{LABEL}</strong>';
 		$input = '';
 
         $premium_notice = '<span class="wdass__premium-notice">Unlock this feature by <a href="//webdevadvisor.com">Upgrading to premium version</a></span>';
@@ -123,7 +142,11 @@ class WDASS_HTML {
 
         echo $html;
     }
-
+    
+    
+    /*-------------------------------------------
+    *  Meida field
+    *-------------------------------------------*/
     public function media ( $params ) {
         $media_url = $params['media_id'] ? wp_get_attachment_url ( $params['media_id'] ) : WDASS_ROOT_URL . 'assets/images/placeholder.png';
         $premium = array_key_exists('field_class', $params) && $params['field_class'] == 'wdass__requres_premium' ? true : false;

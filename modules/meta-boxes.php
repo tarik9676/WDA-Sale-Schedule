@@ -88,7 +88,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
         if ( in_array( $post_type, ['product'] ) ) {
             add_meta_box(
                 '_wdass_event_data',
-                __( 'Schedule Event Data', 'wdass' ), 
+                __( 'Schedule Event Data', 'wda-sale-schedule' ), 
                 [ $this, 'meta_box_html' ],
                 $post_type,
                 'normal',
@@ -107,6 +107,11 @@ class WDASS__meta_boxes extends WDASS_HTML {
         $table_eventmeta    = $wpdb->prefix . 'wdass_eventmeta';
         
 
+        /*----- Nonce Field : So that we can verify while saving -----*/
+
+		wp_nonce_field( 'wdass_schedule_meta_boxes', 'wdass_schedule_meta_boxes_nonce' );
+        
+
         /*----- Pre assinging parent data -----*/
 
         $parent_empty_data = [];
@@ -123,13 +128,14 @@ class WDASS__meta_boxes extends WDASS_HTML {
         /*----------------------------------------------------
         *  Getting meta_key & content columns from DB
         *----------------------------------------------------*/
-        $event_meta_sql = $wpdb->get_results(
+        $event_meta_sql = $wpdb->get_results($wpdb->prepare(
             "SELECT m.post_id, m.meta_key, m.content
-            FROM $table_events AS e
-            LEFT JOIN $table_eventmeta AS m
+            FROM %i as e
+            LEFT JOIN %i AS m
             ON e.id = m.event_id
-            WHERE e.object_id = $post->ID AND m.type = 'modified';"
-        );
+            WHERE e.object_id = %d AND m.type = %s;",
+            [ $table_events, $table_eventmeta, $post->ID, 'modified' ]
+        ));
 
         /*----------------------------------------------------
         *  get_values() stores organized data to meta_object
@@ -141,7 +147,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
         /*----------------------------------------------------------------
         *  Storing existing event id, status & time to existent object
         *----------------------------------------------------------------*/
-        $event_sql = $wpdb->get_results("SELECT * FROM $table_events WHERE object_id = $post->ID;");
+        $event_sql = $wpdb->get_results("SELECT * FROM %s WHERE object_id = %d;", [ $table_events, $post->ID ]);
 
         if ( count($event_sql) ) {
             $this->existent['id']               = $event_sql[0]->id;
@@ -165,7 +171,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 ['name' => 'General', 'id' => 'general', 'class' => 'active'],
                 ['name' => 'Inventory', 'id' => 'inventory'],
                 ['name' => 'Contents', 'id' => 'contents'],
-                ['name' => 'Variations <a href="#">Upgrade to Premium</a>', 'id' => 'variations', 'class' => 'show_if_variable wdass__premium-notice'],
+                ['name' => 'Variations', 'id' => 'variations', 'class' => 'show_if_variable wdass__premium-notice'],
                 ['name' => 'Miscellaneous', 'id' => 'misc'],
             ]);
 
@@ -195,8 +201,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 ?>
                 <p class="form-field ">
                     <label><strong>Schedule Date-Time</strong></label>
-                    <input class="wdass_field " type="date" name="wdass_schedule_date" id="wdass_schedule_date" value="<?php echo $this->existent['schedule_date']; ?>" />
-                    <input class="wdass_field" type="time" name="wdass_schedule_time" id="wdass_schedule_time" value="<?php echo $this->existent['schedule_time']; ?>" />
+                    <input class="wdass_field " type="date" name="wdass_schedule_date" id="wdass_schedule_date" value="<?php echo esc_attr( $this->existent['schedule_date'] ); ?>" />
+                    <input class="wdass_field" type="time" name="wdass_schedule_time" id="wdass_schedule_time" value="<?php echo esc_attr( $this->existent['schedule_time'] ); ?>" />
                 </p>
                 
                 <hr class="wdass__spacer">
@@ -562,7 +568,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
             type="hidden"
             id="wdass_parent_data"
             name="wdass_parent_data"
-            value='<?php echo json_encode( $parent_empty_data ); ?>'
+            value='<?php echo wp_json_encode( $parent_empty_data ); ?>'
         />
 
 
@@ -573,7 +579,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
             type="hidden"
             name="wdass_existing_event"
             id="wdass_existing_event"
-            value='<?php echo json_encode( $this->existent ); ?>'
+            value='<?php echo wp_json_encode( $this->existent ); ?>'
         />
         <?php
     }
@@ -583,12 +589,28 @@ class WDASS__meta_boxes extends WDASS_HTML {
     *  Collect Meta Field Data
     *-------------------------------------------*/
     public function collect_data ( $post_ID, $post, $update ) {
+ 
+        /*-------------------------------------------
+        *  Bailout if nonce is not set
+        *-------------------------------------------*/
+        if ( ! isset( $_POST['wdass_schedule_meta_boxes_nonce'] ) ) {
+            return $post_ID;
+        }
+        
+ 
+        /*-------------------------------------------
+        *  Bailout if nonce is not verified
+        *-------------------------------------------*/
+        if ( ! wp_verify_nonce( $_POST['wdass_schedule_meta_boxes_nonce'], 'wdass_schedule_meta_boxes' ) ) {
+            return $post_ID;
+        }
+
 
         /*-------------------------------------------
         *  Bailout if it's an auto save
         *-------------------------------------------*/
         if ( defined( 'DOING_AUTOSAVE' ) && DOING_AUTOSAVE ) {
-            return;
+            return $post_ID;
         }
 
 
@@ -597,8 +619,9 @@ class WDASS__meta_boxes extends WDASS_HTML {
         *  have enough permission
         *-------------------------------------------*/
         if ( ! current_user_can( 'manage_options' ) ) {
-            return;
+            return $post_ID;
         }
+
 
         if ( $_SERVER["REQUEST_METHOD"] == "POST" && $update ) {
             $this->event_fields['schedule_status'] = !empty( $_POST['wdass_schedule_status'] ) ? sanitize_text_field( $_POST['wdass_schedule_status'] ) : 'inactive';
@@ -606,8 +629,6 @@ class WDASS__meta_boxes extends WDASS_HTML {
             if ( $this->event_fields['schedule_status'] !== 'pending' ) {
                 return;
             }
-
-            date_default_timezone_set( get_option( 'wdass_schedule_timezone', "GMT+0" ) );
             
             $this->event_fields['schedule_date'] = sanitize_text_field( $_POST['wdass_schedule_date'] );
             $this->event_fields['schedule_time'] = sanitize_text_field( $_POST['wdass_schedule_time'] );

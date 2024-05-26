@@ -47,7 +47,7 @@ function wdass_settings_init() {
 
 	add_settings_section(
 		'wdass_general_settings',
-		__( 'General Settings', 'wdass' ),
+		__( 'General Settings', 'wda-sale-schedule' ),
         'wdass_section_callback_general_settings',
         'wdass-sale-schedule',
 		[
@@ -59,7 +59,7 @@ function wdass_settings_init() {
 
 	add_settings_field(
 		'wdass_schedule_timezone',
-	    __( 'Choose Timezone', 'wdass' ),
+	    __( 'Choose Timezone', 'wda-sale-schedule' ),
 		'wdass_general_settings_field_callback',
 		'wdass-sale-schedule',
 		'wdass_general_settings',
@@ -70,7 +70,7 @@ function wdass_settings_init() {
 			'label_for'		=> 'wdass_schedule_timezone',
 			'class'			=> 'wdass_schedule_timezone',
 			'custom_arg'	=> 'custom_data',
-            'description'	=> __( 'Select your timezone.', 'wdass' ),
+            'description'	=> __( 'Select your timezone.', 'wda-sale-schedule' ),
 		)
 	);
 	

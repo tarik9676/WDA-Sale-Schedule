@@ -615,21 +615,12 @@ if ( ! class_exists( 'WDASS_Settings_Field' ) ) {
 		*  Rendering Settings Form
 		*-------------------------------------------*/
 		public function render_form () {
-			$html = '
+			?>
 			<label>
-				{INPUT}
-				<p class="description" id="{ID}-description">{DESCRIPTION}</p>
-			</label>';
-	
-	
-			/*----- String Translation -----*/
-			$html = strtr( $html, [
-				'{INPUT}'		=> $this->render_input( $this->args ),
-				'{ID}'          => esc_attr( $this->args['option_name'] ),
-				'{DESCRIPTION}' => $this->args['description'],
-			] );
-		
-			return $html;
+				<?php $this->render_input( $this->args ); ?>
+				<p class="description" id="<?php echo esc_attr( $this->args['option_name'] ); ?>-description"><?php echo esc_html( $this->args['description'] ); ?></p>
+			</label>
+			<?php
 		}
 	
 	
@@ -637,36 +628,37 @@ if ( ! class_exists( 'WDASS_Settings_Field' ) ) {
 		*  Rendering Input Field
 		*-------------------------------------------*/
 		private function render_input ( $args ) {
-			$html = '';
+			$value       = $args['type'] !== 'checkbox' ? esc_attr( $this->input_value ) : 'yes';
+			$checked     = $this->input_value && $args['type'] == 'checkbox' ? checked( 'yes', esc_attr( $this->input_value ), false) : '';
+			$custom		 = array_key_exists( 'custom_arg', $args ) ? esc_attr( $args['custom_arg'] ) : '';
 	
 			switch ( $args['type'] ) {
 				case 'select':
-					$html .= '<select id="{ID}" name="{NAME}">';
+					?>
+					<select id="<?php echo esc_attr( $args['option_name'] ); ?>" name="<?php echo esc_attr( $args['option_name'] ); ?>"><?php
 					foreach ($this->timezone_api as $val) {
 						$selected = $this->input_value == $val ? 'selected="selected"' : '';
-						$html .= "<option $selected value='$val'>" . ucwords( $val ) . "</option>";
+						?>
+						<option
+							<?php echo esc_attr( $selected ); ?>
+							value="<?php echo esc_attr( $value ); ?>"
+						><?php echo esc_html( ucwords( $val ) ); ?></option><?php
 					}
-			
-					$html .= '</select>';
+					?></select><?php
 					break;
 				
 				default:
-					$html .= '<input id="{ID}" name="{NAME}" type="{TYPE}" value="{VALUE}" {CHECKED} {CUSTOM}/>';
+					?>
+					<input
+						id="<?php echo esc_attr( $args['option_name'] ); ?>"
+						name="<?php echo esc_attr( $args['option_name'] ); ?>"
+						type="<?php echo esc_attr( $args['type'] ); ?>"
+						value="<?php echo esc_attr( $value ); ?>"
+						<?php echo esc_attr( $checked ); ?>
+						<?php echo esc_attr( $custom ); ?>
+					/><?php
 					break;
 			}
-	
-	
-			/*----- String Translation -----*/
-			$html = strtr( $html, [
-				'{ID}'          => esc_attr( $args['option_name'] ),
-				'{NAME}'        => esc_attr( $args['option_name'] ),
-				'{TYPE}'        => esc_attr( $args['type'] ),
-				'{VALUE}'       => $args['type'] !== 'checkbox' ? esc_attr( $this->input_value ) : 'yes',
-				'{CHECKED}'     => $this->input_value && $args['type'] == 'checkbox' ? checked( 'yes', esc_attr( $this->input_value ), false) : '',
-				'{CUSTOM}'		=> array_key_exists( 'custom_arg', $args ) ? esc_attr( $args['custom_arg'] ) : ''
-			] );
-	
-			return $html;
 		}
 	}
 }

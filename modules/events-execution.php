@@ -20,13 +20,16 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
             
             $table_events = $wpdb->prefix . 'wdass_events';
 
-            date_default_timezone_set( get_option( 'wdass_timezone', "GMT+0" ) );
-
 
             /*----------------------------------------------------
             *  Getting all pending schedule events from DB
             *----------------------------------------------------*/
-            $pending_events_sql = $wpdb->get_results( "SELECT * FROM $table_events WHERE schedule_status = 'pending';" );
+            // wp_cache_delete();
+
+            $pending_events_sql = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM %i WHERE `schedule_status` = %s;",
+                [ $table_events, 'pending' ]
+            ));
 
             if ( count( $pending_events_sql ) ) {
                 foreach ( $pending_events_sql as $event ) {
@@ -46,11 +49,12 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
             $table_eventmeta= $wpdb->prefix . 'wdass_eventmeta';
             $table_posts    = $wpdb->prefix . 'posts';
             $table_postmeta = $wpdb->prefix . 'postmeta';
-
-            $event_meta_sql = $wpdb->get_results(
-                "SELECT * FROM $table_eventmeta
-                WHERE event_id = '$event_id' AND type = '$data_type' AND NOT content = '404';"
-            );
+            
+            $event_meta_sql = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM %i
+                WHERE `event_id` = %d AND `type` = %s AND NOT `content` = '%s",
+                [ $table_eventmeta, $event_id, $data_type, '404' ]
+            ));
 
             foreach ( $event_meta_sql as $meta ) {
                 $first_character = substr($meta->meta_key, 0, 1);

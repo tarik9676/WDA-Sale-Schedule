@@ -10,7 +10,8 @@ function wdass_scheduled_events () {
 	global $wpdb;
 	
 	$table_events	= $wpdb->prefix . 'wdass_events';
-	$events_sql = $wpdb->get_results("SELECT * FROM $table_events;");
+
+	$events_sql = $wpdb->get_results($wpdb->prepare("SELECT * FROM %i;", [ $table_events ]));
 
 	if ( count( $events_sql ) ) {
 		?>
@@ -29,9 +30,9 @@ function wdass_scheduled_events () {
 			foreach ( $events_sql as $event ) {
 				?>
 				<tr>
-					<td><?php echo '<strong>#' . $event->object_id . '</strong> ' . get_the_title( $event->object_id ); ?></td>
-					<td><?php echo ucwords( str_replace('_', ' ', $event->schedule_status) ); ?></td>
-					<td><?php echo $event->schedule_date . ' ' . $event->schedule_time; ?></td>
+					<td><strong>#<?php echo esc_html( $event->object_id ); ?></strong> <?php echo esc_html( get_the_title( $event->object_id ) ); ?></td>
+					<td><?php echo esc_html( ucwords( str_replace('_', ' ', $event->schedule_status) ) ); ?></td>
+					<td><?php echo esc_html( $event->schedule_date . ' ' . $event->schedule_time ); ?></td>
 				</tr>
 				<?php
 			}

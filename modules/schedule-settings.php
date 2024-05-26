@@ -23,6 +23,6 @@ if ( ! function_exists( 'wdass_section_callback_general_settings' ) ) {
 if ( ! function_exists( 'wdass_general_settings_field_callback' ) ) {
 	function wdass_general_settings_field_callback ( $args ) {
 		$wdass_fields = new WDASS_Settings_Field( $args );
-		echo $wdass_fields->render_form();
+		$wdass_fields->render_form();
 	}
 }

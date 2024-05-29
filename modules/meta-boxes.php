@@ -589,21 +589,6 @@ class WDASS__meta_boxes extends WDASS_HTML {
     *  Collect Meta Field Data
     *-------------------------------------------*/
     public function collect_data ( $post_ID, $post, $update ) {
- 
-        /*-------------------------------------------
-        *  Bailout if nonce is not set
-        *-------------------------------------------*/
-        if ( ! isset( $_POST['wdass_schedule_meta_boxes_nonce'] ) ) {
-            return $post_ID;
-        }
-        
- 
-        /*-------------------------------------------
-        *  Bailout if nonce is not verified
-        *-------------------------------------------*/
-        if ( ! wp_verify_nonce( $_POST['wdass_schedule_meta_boxes_nonce'], 'wdass_schedule_meta_boxes' ) ) {
-            return $post_ID;
-        }
 
 
         /*-------------------------------------------
@@ -619,6 +604,21 @@ class WDASS__meta_boxes extends WDASS_HTML {
         *  have enough permission
         *-------------------------------------------*/
         if ( ! current_user_can( 'manage_options' ) ) {
+            return $post_ID;
+        }
+ 
+        /*-------------------------------------------
+        *  Bailout if nonce is not set
+        *-------------------------------------------*/
+        if ( ! isset( $_POST['wdass_schedule_meta_boxes_nonce'] ) ) {
+            return $post_ID;
+        }
+        
+ 
+        /*-------------------------------------------
+        *  Bailout if nonce is not verified
+        *-------------------------------------------*/
+        if ( ! wp_verify_nonce( $_POST['wdass_schedule_meta_boxes_nonce'], 'wdass_schedule_meta_boxes' ) ) {
             return $post_ID;
         }
 

@@ -24,8 +24,6 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
             /*----------------------------------------------------
             *  Getting all pending schedule events from DB
             *----------------------------------------------------*/
-            // wp_cache_delete();
-
             $pending_events_sql = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM %i WHERE schedule_status = %s;",
                 [ $table_events, 'pending' ]
@@ -52,7 +50,7 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
             
             $event_meta_sql = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM %i
-                WHERE `event_id` = %d AND `type` = %s AND NOT `content` = %s",
+                WHERE `event_id` = %d AND `type` = %s AND NOT `content` = %s;",
                 [ $table_eventmeta, $event_id, $data_type, '404' ]
             ));
 

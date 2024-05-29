@@ -27,7 +27,7 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
             // wp_cache_delete();
 
             $pending_events_sql = $wpdb->get_results($wpdb->prepare(
-                "SELECT * FROM %i WHERE `schedule_status` = %s;",
+                "SELECT * FROM %i WHERE schedule_status = %s;",
                 [ $table_events, 'pending' ]
             ));
 
@@ -52,7 +52,7 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
             
             $event_meta_sql = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM %i
-                WHERE `event_id` = %d AND `type` = %s AND NOT `content` = '%s",
+                WHERE `event_id` = %d AND `type` = %s AND NOT `content` = %s",
                 [ $table_eventmeta, $event_id, $data_type, '404' ]
             ));
 
@@ -62,16 +62,11 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
                 if ( $meta->content !== '404' ) {
                     switch ( $first_character ) {
                         case '_':
-                            $wpdb->update(
-                                $table_postmeta,
-                                [ 'meta_value' => $meta->content ],
-                                [
-                                    'post_id'   => $meta->post_id,
-                                    'meta_key'  => $meta->meta_key
-                                ],
-                                [ '%s' ],
-                                [ '%d', '%s' ]
-                            );
+                            update_post_meta( $meta->post_id, $meta->meta_key, $meta->content );
+
+                            if ( $meta->meta_key == '_sale_price') {
+                                update_post_meta( $meta->post_id, '_price', $meta->content );
+                            }
                             break;
     
                         case 't':

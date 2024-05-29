@@ -147,7 +147,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
         /*----------------------------------------------------------------
         *  Storing existing event id, status & time to existent object
         *----------------------------------------------------------------*/
-        $event_sql = $wpdb->get_results("SELECT * FROM %s WHERE object_id = %d;", [ $table_events, $post->ID ]);
+        $event_sql = $wpdb->get_results($wpdb->prepare("SELECT * FROM %i WHERE object_id = %d;", [ $table_events, $post->ID ]));
 
         if ( count($event_sql) ) {
             $this->existent['id']               = $event_sql[0]->id;

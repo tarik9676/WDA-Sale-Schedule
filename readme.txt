@@ -4,7 +4,7 @@ Donate link: https://webdevadvisor.com/wda-sale-schedule-donation/
 Tags: schedule, sale, wda, webdevadvisor
 Requires at least: 6.2
 Tested up to: 5.4
-Stable tag: 1.0.0
+Stable tag: 1.1.0
 Requires PHP: 7.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -79,6 +79,9 @@ No, this plugin requires WooCommerce.
 5. Slug & Review Status
 
 == Changelog ==
+
+= 1.1.0 =
+Fixed few minor issues.
 
 = 1.0.0 =
 Initial release.

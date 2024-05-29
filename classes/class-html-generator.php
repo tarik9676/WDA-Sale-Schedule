@@ -55,7 +55,7 @@ class WDASS_HTML {
                 type="radio"
                 name="<?php echo esc_attr( $params['id'] ); ?>"
                 value="<?php echo esc_attr( $key ); ?>"
-                <?php echo esc_attr( $disabled ) . ' ' . esc_attr( $checked ); ?>
+                <?php echo esc_attr( $params['disabled'] ) . ' ' . esc_attr( $checked ); ?>
             /> <?php echo esc_html( $val ); ?></label><?php
         }
     }
@@ -160,7 +160,7 @@ class WDASS_HTML {
 
 
         ?>
-        <p class="form-field <?php echo esc_attr( $field_class ); ?>">
+        <p class="form-field <?php echo esc_attr( $params['field_class'] ); ?>">
             <label>
                 <strong><?php echo esc_html( $params['label'] ); ?></strong>
             </label>

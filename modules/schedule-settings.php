@@ -14,9 +14,7 @@ if ( ! function_exists( 'wdass_admin_page' ) ) {
 
 
 if ( ! function_exists( 'wdass_section_callback_general_settings' ) ) {
-	function wdass_section_callback_general_settings () {
-		echo "";
-	}
+	function wdass_section_callback_general_settings () {}
 }
 
 

@@ -16,7 +16,7 @@ if ( ! function_exists( 'wdass_meta_boxes' ) ) :
     *  Calling meta box caller only for admin
     *------------------------------------------------------*/
     if ( is_admin() ) {
-        add_action( 'load-post.php',     'wdass_meta_boxes' );
+        add_action( 'load-post.php', 'wdass_meta_boxes' );
     }
 
 endif;

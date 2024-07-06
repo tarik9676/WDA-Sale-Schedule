@@ -35,7 +35,6 @@ define( 'WDASS_ROOT_URL', plugin_dir_url( __FILE__ )) ;
 /*-------------------------------------------
 *  Funtions
 *-------------------------------------------*/
-require_once( WDASS_ROOT_DIR . 'functions/wdass-functions.php' );
 require_once( WDASS_ROOT_DIR . 'functions/admin-settings-template.php' );
 require_once( WDASS_ROOT_DIR . 'functions/script-enqueue.php' );
 

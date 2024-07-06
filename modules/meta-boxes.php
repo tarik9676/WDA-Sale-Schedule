@@ -15,9 +15,9 @@ if ( ! function_exists( 'wdass_meta_boxes' ) ) :
     /*------------------------------------------------------
     *  Calling meta box caller only for admin
     *------------------------------------------------------*/
-    if ( is_admin() ) {
+    add_action('admin_init', function() {
         add_action( 'load-post.php', 'wdass_meta_boxes' );
-    }
+    });
 
 endif;
 
@@ -109,7 +109,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
 
         /*----- Nonce Field : So that we can verify while saving -----*/
 
-		wp_nonce_field( 'wdass_schedule_meta_boxes', 'wdass_schedule_meta_boxes_nonce' );
+		wp_nonce_field( 'wdass_meta_auth', 'wdass_meta_auth_nonce' );
         
 
         /*----- Pre assinging parent data -----*/
@@ -606,19 +606,12 @@ class WDASS__meta_boxes extends WDASS_HTML {
         if ( ! current_user_can( 'manage_options' ) ) {
             return $post_ID;
         }
- 
-        /*-------------------------------------------
-        *  Bailout if nonce is not set
-        *-------------------------------------------*/
-        if ( ! isset( $_POST['wdass_schedule_meta_boxes_nonce'] ) ) {
-            return $post_ID;
-        }
         
  
         /*-------------------------------------------
         *  Bailout if nonce is not verified
         *-------------------------------------------*/
-        if ( ! wp_verify_nonce( $_POST['wdass_schedule_meta_boxes_nonce'], 'wdass_schedule_meta_boxes' ) ) {
+        if ( ! isset( $_POST['wdass_meta_auth_nonce'] ) || ! wp_verify_nonce( wp_unslash( sanitize_text_field($_POST['wdass_meta_auth_nonce']) ), 'wdass_meta_auth' ) ) {
             return $post_ID;
         }
 
@@ -633,7 +626,8 @@ class WDASS__meta_boxes extends WDASS_HTML {
             $this->event_fields['schedule_date'] = sanitize_text_field( $_POST['wdass_schedule_date'] );
             $this->event_fields['schedule_time'] = sanitize_text_field( $_POST['wdass_schedule_time'] );
             
-            $existent = json_decode( stripslashes( $_POST['wdass_existing_event'] ), true );
+            // $existent = json_decode( stripslashes( sanitize_text_field( wp_unslash( $_POST['wdass_existing_event'] ) ) ), true );
+            $existent = json_decode( sanitize_text_field( wp_unslash( $_POST['wdass_existing_event'] ) ), true );
             
             global $wpdb;
 
@@ -647,12 +641,21 @@ class WDASS__meta_boxes extends WDASS_HTML {
             /*-------------------------------------------
             *  Getting modified data to be scheduled
             *-------------------------------------------*/
-            $parent_modified_data = json_decode( stripslashes( $_POST['wdass_parent_data'] ), true );
+            // $parent_modified_data = json_decode( stripslashes( sanitize_text_field( wp_unslash( $_POST['wdass_parent_data'] ) ) ), true );
+            $parent_modified_data = json_decode( sanitize_text_field( wp_unslash( $_POST['wdass_parent_data'] ) ), true );
 
             $event_data[ 'modified' ] = $parent_modified_data;
-            $event_data[ 'modified' ][ $post_ID ][ 'post_excerpt' ] = !empty($_POST['wdass_' . $post_ID . '_post_excerpt']) ? stripslashes($_POST['wdass_' . $post_ID . '_post_excerpt']) : '404';
-            $event_data[ 'modified' ][ $post_ID ][ 'post_content' ] = !empty($_POST['wdass_' . $post_ID . '_post_content']) ? stripslashes($_POST['wdass_' . $post_ID . '_post_content']) : '404';
 
+            if ( isset( $_POST['wdass_' . $post_ID . '_post_excerpt'] ) ) {
+                $_post_excerpt = stripslashes(wp_kses_post($_POST['wdass_' . $post_ID . '_post_excerpt']));
+                $event_data[ 'modified' ][ $post_ID ][ 'post_excerpt' ] = ! empty( $_post_excerpt ) ? $_post_excerpt : '404';
+            }
+            
+            if ( isset( $_POST['wdass_' . $post_ID . '_post_content'] ) ) {
+                $_post_content = stripslashes(wp_kses_post($_POST['wdass_' . $post_ID . '_post_content']));
+                $event_data[ 'modified' ][ $post_ID ][ 'post_content' ] = ! empty( $_post_content ) ? $_post_content : '404';
+            }
+            
 
             /*-------------------------------------------
             *  If no existing event 

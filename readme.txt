@@ -3,7 +3,7 @@ Contributors: trkl9676
 Donate link: https://webdevadvisor.com/wda-sale-schedule-donation/
 Tags: schedule, sale, wda, webdevadvisor
 Requires at least: 6.2
-Tested up to: 5.4
+Tested up to: 6.5
 Stable tag: 1.1.0
 Requires PHP: 7.0
 License: GPLv2 or later

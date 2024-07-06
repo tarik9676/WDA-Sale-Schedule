@@ -15,19 +15,9 @@ function wdass_admin_menu() {
         'Sale Schedule',
         'manage_options',
         'wdass-sale-schedule',
-        'wdass_admin_page',
-        'dashicons-image-filter',
-        30
-    );
-
-	/*----- Schedule Events -----*/
-    add_submenu_page(
-        "wdass-sale-schedule",
-        "Schedule Events",
-        "Events",
-        "manage_options",
-        "action-schedules",
         "wdass_scheduled_events",
+        WDASS_ROOT_URL . 'assets/images/logo-icon.svg',
+        30
     );
 }
 

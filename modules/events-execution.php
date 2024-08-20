@@ -45,14 +45,23 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
 
             $table_events   = $wpdb->prefix . 'wdass_events';
             $table_eventmeta= $wpdb->prefix . 'wdass_eventmeta';
-            $table_posts    = $wpdb->prefix . 'posts';
-            $table_postmeta = $wpdb->prefix . 'postmeta';
             
+
+            
+            $post_data = [
+                'ID' => $post_id,
+                'meta_input' => []
+            ];
+            
+
+
             $event_meta_sql = $wpdb->get_results($wpdb->prepare(
                 "SELECT * FROM %i
                 WHERE `event_id` = %d AND `type` = %s AND NOT `content` = %s;",
                 [ $table_eventmeta, $event_id, $data_type, '404' ]
             ));
+            
+
 
             foreach ( $event_meta_sql as $meta ) {
                 $first_character = substr($meta->meta_key, 0, 1);
@@ -60,32 +69,40 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
                 if ( $meta->content !== '404' ) {
                     switch ( $first_character ) {
                         case '_':
-                            update_post_meta( $meta->post_id, $meta->meta_key, $meta->content );
+                            $post_data[ 'meta_input' ][ $meta->meta_key ] = $meta->content;
 
                             if ( $meta->meta_key == '_sale_price') {
-                                update_post_meta( $meta->post_id, '_price', $meta->content );
+                                $post_data[ 'meta_input' ][ '_price' ] = $meta->content;
                             }
                             break;
     
                         case 't':
                             $terms = json_decode( $meta->content, true );
                             
-                            wp_set_object_terms( $meta->post_id, $terms[ 'product_cat' ], 'product_cat' );
-                            wp_set_object_terms( $meta->post_id, $terms[ 'product_tag' ], 'product_tag' );
+                            wp_set_object_terms( $post_id, $terms[ 'product_cat' ], 'product_cat' );
+                            wp_set_object_terms( $post_id, $terms[ 'product_tag' ], 'product_tag' );
                             break;
                         
                         default:
-                            $wpdb->update(
-                                $table_posts,
-                                [ $meta->meta_key => $meta->content ],
-                                [ 'ID'  => $meta->post_id ],
-                                [ '%s' ],
-                                [ '%d' ]
-                            );
+                            $post_data[ $meta->meta_key ] = $meta->content;
                             break;
                     }
                 }
             } // Meta Table Loop ENDS
+            
+
+
+            /*----------------------------------------------------
+            *  Update the post with scheduled data
+            *----------------------------------------------------*/
+
+            wp_update_post( $post_data );
+            
+
+
+            /*----------------------------------------------------
+            *  Update event status on custom table
+            *----------------------------------------------------*/
 
             $wpdb->update(
                 $table_events,
@@ -94,6 +111,8 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
                 [ '%s' ],
                 [ '%d' ]
             );
+
+
         }
     }
     

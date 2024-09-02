@@ -1,0 +1,311 @@
+:root {
+    --wdass-border: 2px solid #dfdede8c;
+    --wdass-dashed-border: 2px dashed #d1d1d1e5;
+
+    // border
+    // --wdass-border-width: 1px;
+    // --wdass-border-style: solid;
+    // --wdass-border-color: #ededed;
+    // --wdass-border: var(--wdass-border-width) var(--wdass-border-style) var(--wdass-border-color);
+    --wdass-border-radius: 4px;
+}
+
+#_wdass_event_data {
+    ul {
+        &.sidebar {
+            margin: 0;
+            background-color: #fafafa;
+            border-right: var(--wdass-border);
+        }
+    }
+    .sidebar {
+        li {
+            color: #135e96;
+            padding: 10px;
+            margin: 0;
+            border-bottom: var(--wdass-border);
+            width: 150px;
+        }
+        :is(li:hover, li.active) {
+            cursor: pointer;
+            color: #555;
+            background-color: #eee;
+        }
+    }
+    .inside {
+        display: flex;
+        flex-direction: row;
+        justify-content: flex-start;
+        padding: 0;
+        margin: 0;
+    }
+    .wdass__meta-container {
+        padding: 5px 20px 20px 20px;
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+}
+
+
+.wdass__meta-menu.active {
+    color: blue;
+}
+
+
+.wdass__meta-content {
+    width: 100%;
+    
+    &.hide {
+        display: none;
+    }
+
+    label {
+        display: inline-block;
+        margin-right: 20px;
+        padding-right: 20px;
+    }
+
+    .form-field :is(input[type='text'], input[type='number']) {
+        width: 470px !important;
+    }
+    &>.wdass__media-field {
+        margin-bottom: 20px;
+        padding-bottom: 20px;
+    }
+
+    .wdass__media-field {
+        width: 100%;
+    }
+
+}
+
+.post-type-product .tablenav input {
+    height: auto !important;
+}
+
+.wdass__add-media {
+    display: block;
+    width: fit-content;
+
+    &>img {
+        height: 266px;
+        width: 266px;
+        border: 1px solid #dbdbdb;
+        border-radius: 10px;
+    }
+}
+
+.wdass__remove-media {
+    color: red;
+}
+
+.wdass__variations li {
+    border: 1px solid #ebebeb;
+    margin-bottom: 15px;
+}
+
+.wdass__variations .wdass__variation-title {
+    padding: 20px;
+    border-bottom: 1px solid #ebebeb;
+}
+
+.wdass__variations .wdass__variation-title:hover {
+    background-color: #e7f1ff;
+    cursor: pointer;
+}
+
+.wdass__variation-container {
+    padding: 20px;
+    &.hide {
+        display: none;
+        &>img {
+            height: 70px;
+            width: 70px;
+        }
+    }
+}
+
+.wdass__row {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    
+    &:has(.form-field>textarea) {
+        display: block;
+    }
+}
+
+/* .wdass__row .form-field {
+    margin-top: 10px !important;
+} */
+
+// .wdass__row:has(.form-field>textarea) {
+//     display: block;
+// }
+
+.wdass_hide {
+    display: none;
+}
+
+#wdass--category-list,
+#wdass--tag-list {
+    max-height: 150px;
+    overflow-y: scroll;
+    width: fit-content;
+    min-width: 200px;
+    padding: 10px;
+    border: 1px solid #b7b7b763;
+    border-radius: 10px;
+
+    .wdass--children {
+        margin-left: 20px;
+        margin-top: 5px;
+    }
+}
+
+
+// #events-table {
+//     min-width: 800px;
+
+//     :is(th, td) {
+//         text-align: left;
+//         padding: 10px !important;
+//         border-bottom: 1px solid #d1d1d1;
+//     }
+// }
+
+.wdass__requres_premium :not(.wdass__premium-notice) {
+    opacity: 0.8;
+}
+
+.wdass__premium-notice {
+    display: block;
+    font-size: 15px;
+    margin-top: 10px;
+
+    a {
+        color: #ff5500;
+    }
+}
+
+
+li[data-menu="variations"] a {
+    display: block;
+}
+
+hr.wdass__devider {
+    margin-top: 30px;
+    margin-bottom: 30px;
+    border-top: 1px solid #dcdcde;
+    border-bottom: 1px solid #f6f7f7;
+}
+
+hr.wdass__spacer {
+    margin-top: 30px;
+    border: 0 !important;
+}
+
+#toplevel_page_wdass-sale-schedule .wp-menu-image img {
+    width: 19px;
+    margin: auto;
+    padding: 0px;
+    border-radius: 3px;
+    margin-top: 5px;
+    border: 2px solid #e1e1e1;
+}
+
+
+
+
+.wdass--event_table {
+    border-collapse: collapse;
+    margin-top: 20px;
+    border-radius: 20px;
+    // box-shadow: 0px 0px 6px 0px #7575991f;
+    text-align: left;
+    // width: 100%;
+    font-size: 14px;
+
+    :is( thead, tfoot ) {
+        background-color: #3A434E;
+        color: #fff;
+        text-transform: uppercase;
+
+        th {
+            font-weight: 400;
+            border: 1px solid #3A434E;
+        }
+    }
+
+    .wdass--child-product {
+        color: #c5c5c5;
+    }
+
+    :is(th, td) {
+        // padding: 23px 50px;
+        padding: 11px 40px;
+        text-wrap: nowrap;
+    }
+
+    .wdass--table-section-title {
+        text-align: center;
+        text-transform: uppercase;
+        color: #5f6d7e;
+
+        td {
+            padding-top: 25px;
+        }
+    }
+
+    thead {
+        tr {
+            &>th:first-child {
+                border-top-left-radius: var(--border-radius);
+            }
+            &>th:last-child {
+                border-top-right-radius: var(--border-radius);
+            }
+        }
+    }
+
+    tbody {
+        background-color: #fff;
+        color: #959595;
+
+        // td {
+        //     border-right: 1px solid #dfdfdf;
+        // }
+
+        tr {
+            // border-bottom: 1px solid #dfdfdf;
+
+            td {
+                border: var(--border);
+            }
+
+            // &:nth-child( even ) {
+            //     :is( td, th ) {
+            //         background-color: #f1f1f19e;
+            //     }
+            // }
+            &:hover :is( td, th ) {
+                background-color: #d7d7d7;
+                color: #737373;
+                cursor: pointer;
+            }
+        }
+    }
+
+    tfoot {
+        tr {
+            &>th:first-child {
+                border-bottom-left-radius: var(--border-radius);
+            }
+            &>th:last-child {
+                border-bottom-right-radius: var(--border-radius);
+            }
+        }
+    }
+}

@@ -57,6 +57,11 @@
             // Tab switcher
             this.metaBox.on( 'click', '.wdass__meta-menu', '', this.switchTab.bind(this) );
 
+            // Attachment Handler
+            this.mediaField.on( 'click', '.wdass__add-media.wdass__parent-input', 'parent', this.upload.bind(this) );
+            this.mediaField.on( 'click', '.wdass__add-media.wdass__variable-input', 'variable', this.upload.bind(this) );
+            this.mediaField.on( 'click', '.wdass__remove-media', '', this.clearUpload.bind(this) );
+
             // Data Handler
             this.metaBox.on( 'change', '.wdass__parent-input', 'parent', this.data.bind(this) );
             this.metaBox.on( 'change', '.wdass__variations .wdass_field', 'variable', this.data.bind(this) );
@@ -133,6 +138,50 @@
             
             this.metaBox.find( '.wdass__meta-content' ).addClass( 'hide' );
             $( `[data-container="${id}"]` ).removeClass( 'hide' );
+        }
+
+        clearUpload ( e ) {
+            $( e.target ).closest( '.wdass__media-field' ).find( ".wdass__media-input" ).attr( 'value', 0 );
+            $( e.target ).closest( '.wdass__media-field' ).find( ".wdass__add-media>img" ).attr( 'src', this.homeurl + '/wp-content/plugins/wda-sale-schedule/assets/images/placeholder.png' );
+            $( e.target ).closest( '.wdass__media-field' ).find( ".wdass__remove-media" ).css({ 'display' : 'none' });
+        }
+
+        upload ( e ) {
+            let mediaFrame;
+            e.preventDefault();
+
+            if ( mediaFrame ) {
+                mediaFrame.open();
+                return;
+            }
+
+            mediaFrame = wp.media.frames.file_frame = wp.media({
+                title: 'Choose Attachment',
+                button: {
+                    text: 'Choose Attachment'
+                },
+                multiple: false
+            });
+            
+            const that = this;
+            mediaFrame.on('select', function() {
+                let mediaWrapper = $( e.target ).closest( '.wdass__media-field' );
+                const attachment = mediaFrame.state().get('selection').toJSON()[0];
+                
+                let props = {};
+
+                // props.input = e.data == 'parent' ? "#wdass_parent_data" : "#wdass_variations_data";
+                props.input = "#wdass_parent_data";
+                props.key = mediaWrapper.find( 'input' ).attr( 'name' ).replace( 'wdass_', '' );
+
+                that.addData( mediaWrapper.data( 'pid' ), props, attachment.id );
+                
+                mediaWrapper.find( ".wdass__media-input" ).attr( 'value', attachment.id );
+                mediaWrapper.find( ".wdass__add-media>img" ).attr( 'src', attachment.url );
+                mediaWrapper.find( ".wdass__remove-media" ).css({ 'display' : 'block' });
+            });
+
+            mediaFrame.open();
         }
 
         addData ( postID, props, value ) {

@@ -309,12 +309,18 @@ class WDASS__meta_boxes extends WDASS_HTML {
                 /*------------------------------------------------
                 *  Product thumbnail
                 *------------------------------------------------*/
+                // $this->media([
+                //     'post_id'   => $post->ID,
+                //     'field_key' => '_thumbnail_id',
+                //     'media_id'  => '',
+                //     'class'     => 'wdass__parent-input',
+                //     'field_class'=> 'wdass__requres_premium'
+                // ]);
                 $this->media([
                     'post_id'   => $post->ID,
                     'field_key' => '_thumbnail_id',
-                    'media_id'  => '',
-                    'class'     => 'wdass__parent-input',
-                    'field_class'=> 'wdass__requres_premium'
+                    'media_id'  => $this->val($post->ID, '_thumbnail_id'),
+                    'class'     => 'wdass__parent-input'
                 ]);
 
                 echo '<hr class="wdass__devider">';

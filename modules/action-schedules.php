@@ -15,8 +15,9 @@ function wdass_scheduled_events () {
 
 	if ( count( $events_sql ) ) {
 		?>
+		<hr class="wdass__spacer">
 		<h1>All Events</h1>
-		<table class="wp-list-table" id="events-table">
+		<table class="wdass--event_table" id="events-table">
 			<thead>
 				<tr>
 					<th>Product</th>

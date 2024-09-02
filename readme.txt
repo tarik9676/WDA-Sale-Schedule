@@ -1,90 +1,88 @@
 === WDA Sale Schedule ===
 Contributors: trkl9676
-Donate link: https://webdevadvisor.com/wda-sale-schedule-donation/
-Tags: schedule, sale, wda, webdevadvisor
-Requires at least: 6.2
+Tags: WooCommerce, Sales, Scheduling, Dynamic Pricing, Product Management
+Requires at least: 6.0
 Tested up to: 6.6
-Stable tag: 1.1.1
-Requires PHP: 7.0
+Requires PHP: 7.4
+Stable tag: 1.2.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-Too much stress on sale day? Relaaaax!!! Prepare sales content a week/month/year ago and sales will be live whenever you want.
+== Short Description ==
+Automate and schedule WooCommerce product changes, including prices, titles, and descriptions, for seamless sales management.
 
 == Description ==
+Optimize and automate your WooCommerce sales strategy with **WDA Sale Schedule**. This versatile plugin allows you to schedule changes to product details, enabling you to plan and execute sales campaigns without manual oversight. Whether it’s adjusting prices, updating titles, or changing product descriptions, WDA Sale Schedule ensures your sales are seamless and efficient. The plugin also provides an option to restore original product content after a sale, maintaining the consistency of your store’s offerings.
 
-WDA Sale Schedule is specially built for woocommerce stores. Using this plugin store admins will be able to schedule contents to be changed at a certain time without loosing regular contents like product title, thumbnail, product status, stock status, stock quantity and much more.
+Designed for store administrators who want to maximize their efficiency, WDA Sale Schedule offers robust scheduling options to accommodate both simple and complex sales scenarios.
 
-Let's say, you have product named "Golden Smart Watch" regular priced $400 and you are planning to put it on sale at $350 then you can put a new title in the custom product title field as "Golden Smart Watch | $50 OFF!" and add the sale price too in the custom sale price input field. Also, you've to assign the designed publishing date in the schedule date & time. Which means you don't need to stay focused on the sale day to prepare the sale or no need to hire people to make it done. You can prepare the sale many days/months ago whenever you get some time.
+== Features ==
+**WDA Sale Schedule** is a comprehensive solution for WooCommerce store owners, featuring:
 
-Even though we change main contents by scheduling new contents, we won't loose regular/original contents. You can also add a restoring schedule date & time to restore regular contents automatically.
+- **Automated Content Scheduling**: Plan and schedule updates to product details like titles, prices, descriptions, and more, to automatically take effect at a designated date and time.
+- **Comprehensive Field Coverage**: Customize key product attributes, including:
+  - Product Status
+  - Product Title (e.g., "Golden Smart Watch | $50 OFF!")
+  - Product Thumbnail
+  - Regular and Sale Prices
+  - Product Slug and SKU
+  - Stock Management, including Stock Quantity and Status
+  - Short and Long Descriptions
+  - Review Status
+- **Premium Features**: Expand your scheduling capabilities with premium options, including:
+  - Categories and Tags
+  - Variable Product Thumbnail
+  - Virtual and Downloadable Switches
+  - Additional Stock and Pricing Options
+- **Backup and Restore**: Automatically backup original product data before making changes, with the option to restore original content after the sale ends.
+- **Seamless Integration**: Built to work within the WooCommerce product editor, ensuring a smooth user experience without disrupting your existing workflow.
 
-Let's see which fields can be scheduled...
+With WDA Sale Schedule, you can prepare your sales campaigns well in advance, allowing you to focus on other important aspects of your business.
 
+== Installation ==
+### Minimum Requirements:
+* WordPress 6.0 or greater
+* PHP version 7.4 or greater
+* MySQL version 5.0 or greater
 
-= Available Schedule Fields =
+### Recommended Requirements:
+* PHP version 8.1 or greater
+* MySQL version 5.6 or greater
+* WordPress Memory limit of 64 MB or greater (128 MB or higher is preferred)
 
-* Product Status
-* Product Title
-* Regular Price
-* Sale Price
-* Slug
-* SKU
-* Stock Management & Quantity
-* Stock Status
-* Short Description
-* Long Description
-* Review Status
-* Thumbnail (Premium)
-* Categories (Premium)
-* Tags (Premium)
+### Installation Steps:
+1. Install the plugin using the WordPress built-in Plugin installer, or upload the plugin files to the `wp-content/plugins/` directory.
+2. Activate the plugin through the 'Plugins' menu in WordPress.
+3. Access the WooCommerce product editor to begin scheduling your product updates.
 
-= Variable Product Features =
+== Usage ==
+**WDA Sale Schedule** integrates directly with WooCommerce, offering a straightforward interface that mirrors the familiar WooCommerce product editor layout. Simply navigate to the product editor, select the desired fields, and schedule your updates.
 
-* Regular Price (Premium)
-* Sale Price (Premium)
-* Enable/Disable (Premium)
-* Virtual Switch (Premium)
-* Downloadable Switch (Premium)
-* Stock Management & Quantity (Premium)
-* Stock Status (Premium)
-* Description (Premium)
-
-= Important Features =
-
-* Backup Original Data (Premium)
-* Restore Original Data (Premium)
-
-
-== FAQ ==
-
+== Frequently Asked Questions (FAQ) ==
 = What does this plugin do? =
-
-This plugin helps you to schedule any changes of a product fields.
-
-= Can I pick a date to schedule a change? =
-
-Yes! You can pick any date & time in the future to schedule data change.
+WDA Sale Schedule allows you to automate and schedule changes to WooCommerce product fields, enabling dynamic sales and content management.
 
 = Can I use this plugin without WooCommerce? =
-
-No, this plugin requires WooCommerce.
+No, this plugin requires WooCommerce to function.
 
 == Screenshots ==
-
-1. Schedule settings : Schedule & Restore Switch & Date-Time
-2. Product title, thumbnail, status, prices, Categories & Tags
-3. SKU, Stock Qty, Stock Status
-4. Short & Long Description
-5. Slug & Review Status
+1. **Schedule Settings** - Configure schedule and restore settings with date and time controls.
+2. **Product Details** - Modify and schedule changes to product titles, thumbnails, statuses, prices, categories, and tags.
+3. **Inventory Management** - Manage SKU, stock quantities, and stock status with scheduling capabilities.
+4. **Content Fields** - Schedule updates to short and long descriptions, slugs, and review status.
 
 == Changelog ==
+= 1.2.0 =
+* Product Thumbnail available free version and improved events status table.
 
 = 1.1.1 =
-Fixed some minor issues.
+* Fixed minor issues to improve stability.
 
 = 1.1.0 =
-Fixed few minor issues.
+* Addressed minor bugs and enhanced performance.
 
 = 1.0.0 =
-Initial release.
+* Initial release of WDA Sale Schedule.
+
+== License ==
+This plugin is licensed under the GNU General Public License v2.0 or later.

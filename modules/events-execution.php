@@ -16,21 +16,28 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
         *  Find & execute pending events
         *-------------------------------------------*/
         public function check_run_events () {
-            global $wpdb;
-            
-            $table_events = $wpdb->prefix . 'wdass_events';
-
 
             /*----------------------------------------------------
-            *  Getting all pending schedule events from DB
+            *  Getting all pending schedule events
             *----------------------------------------------------*/
-            $pending_events_sql = $wpdb->get_results($wpdb->prepare(
-                "SELECT * FROM %i WHERE schedule_status = %s;",
-                [ $table_events, 'pending' ]
-            ));
+            $pending_events_cache_key = 'wdass_pending_events_cache';
+            $pending_events = wp_cache_get( $pending_events_cache_key );
 
-            if ( count( $pending_events_sql ) ) {
-                foreach ( $pending_events_sql as $event ) {
+            if ($pending_events === false) {
+                global $wpdb;
+
+                $table_events = $wpdb->prefix . 'wdass_events';
+
+                $pending_events = $wpdb->get_results($wpdb->prepare(
+                    "SELECT * FROM %i WHERE schedule_status = %s;",
+                    [ $table_events, 'pending' ]
+                ));
+
+                wp_cache_set($pending_events_cache_key, $pending_events);
+            }
+
+            if ( count( $pending_events ) ) {
+                foreach ( $pending_events as $event ) {
                     $schedule_time_string = $event->schedule_date . ' ' . $event->schedule_time;
 
                     if ( strtotime( current_time( 'mysql' ) ) > strtotime( $schedule_time_string ) ) {
@@ -44,7 +51,6 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
         private function execute ( $wpdb, $post_id, $event_id, $data_type, $status_key, $status_value ) {
 
             $table_events   = $wpdb->prefix . 'wdass_events';
-            $table_eventmeta= $wpdb->prefix . 'wdass_eventmeta';
             
 
             
@@ -52,18 +58,30 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
                 'ID' => $post_id,
                 'meta_input' => []
             ];
+
             
 
+            /*----------------------------------------------------
+            *  Getting all event metas
+            *----------------------------------------------------*/
+            $cache_key_events_metas = 'wdass_events_metas_cache';
+            $all_event_metas = wp_cache_get( $cache_key_events_metas );
 
-            $event_meta_sql = $wpdb->get_results($wpdb->prepare(
-                "SELECT * FROM %i
-                WHERE `event_id` = %d AND `type` = %s AND NOT `content` = %s;",
-                [ $table_eventmeta, $event_id, $data_type, '404' ]
-            ));
-            
+            if ($all_event_metas === false) {
+                $table_eventmeta = $wpdb->prefix . 'wdass_eventmeta';
+
+                $all_event_metas = $wpdb->get_results($wpdb->prepare(
+                    "SELECT * FROM %i
+                    WHERE `event_id` = %d AND `type` = %s AND NOT `content` = %s;",
+                    [ $table_eventmeta, $event_id, $data_type, '404' ]
+                ));
+
+                wp_cache_set($cache_key_events_metas, $all_event_metas);
+            }
 
 
-            foreach ( $event_meta_sql as $meta ) {
+
+            foreach ( $all_event_metas as $meta ) {
                 $first_character = substr($meta->meta_key, 0, 1);
                 
                 if ( $meta->content !== '404' ) {

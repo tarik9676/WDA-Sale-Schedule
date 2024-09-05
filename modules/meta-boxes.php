@@ -123,37 +123,58 @@ class WDASS__meta_boxes extends WDASS_HTML {
         *  Getting product object by post id
         *------------------------------------------------*/
         $product = wc_get_product( $post->ID );
-
+            
+            
 
         /*----------------------------------------------------
-        *  Getting meta_key & content columns from DB
+        *  Getting meta_key & content columns
         *----------------------------------------------------*/
-        $event_meta_sql = $wpdb->get_results($wpdb->prepare(
-            "SELECT m.post_id, m.meta_key, m.content
-            FROM %i as e
-            LEFT JOIN %i AS m
-            ON e.id = m.event_id
-            WHERE e.object_id = %d AND m.type = %s;",
-            [ $table_events, $table_eventmeta, $post->ID, 'modified' ]
-        ));
+        $cache_key_eventmeta = 'wdass_eventmeta_cache';
+        $all_eventmeta = wp_cache_get( $cache_key_eventmeta );
+
+        if ($all_eventmeta === false) {
+            $all_eventmeta = $wpdb->get_results($wpdb->prepare(
+                "SELECT m.post_id, m.meta_key, m.content
+                FROM %i as e
+                LEFT JOIN %i AS m
+                ON e.id = m.event_id
+                WHERE e.object_id = %d AND m.type = %s;",
+                [ $table_events, $table_eventmeta, $post->ID, 'modified' ]
+            ));
+
+            wp_cache_set($cache_key_eventmeta, $all_eventmeta);
+        }
 
         /*----------------------------------------------------
         *  get_values() stores organized data to meta_object
         *  which helps val() to distribute
         *-----------------------------------------------------*/
-        $this->get_values( $event_meta_sql );
-
+        $this->get_values( $all_eventmeta );
+            
+        
 
         /*----------------------------------------------------------------
         *  Storing existing event id, status & time to existent object
         *----------------------------------------------------------------*/
-        $event_sql = $wpdb->get_results($wpdb->prepare("SELECT * FROM %i WHERE object_id = %d;", [ $table_events, $post->ID ]));
+        $cache_key_allevents = 'wdass_allevents_cache';
+        $allevents = wp_cache_get( $cache_key_allevents );
 
-        if ( count($event_sql) ) {
-            $this->existent['id']               = $event_sql[0]->id;
-            $this->existent['schedule_status']  = $event_sql[0]->schedule_status;
-            $this->existent['schedule_date']    = $event_sql[0]->schedule_date;
-            $this->existent['schedule_time']    = $event_sql[0]->schedule_time;
+        if ($allevents === false) {
+            $allevents = $wpdb->get_results($wpdb->prepare(
+                "SELECT * FROM %i
+                WHERE object_id = %d;",
+                [ $table_events, $post->ID ]
+            ));
+
+            wp_cache_set($cache_key_allevents, $allevents);
+        }
+        
+
+        if ( count($allevents) ) {
+            $this->existent['id']               = $allevents[0]->id;
+            $this->existent['schedule_status']  = $allevents[0]->schedule_status;
+            $this->existent['schedule_date']    = $allevents[0]->schedule_date;
+            $this->existent['schedule_time']    = $allevents[0]->schedule_time;
             
             /*----- Also adding tags & categories if an event exists -----*/
             $parent_empty_data[ $post->ID ]['terms'] = $this->val($post->ID, 'terms');
@@ -617,23 +638,24 @@ class WDASS__meta_boxes extends WDASS_HTML {
         /*-------------------------------------------
         *  Bailout if nonce is not verified
         *-------------------------------------------*/
-        if ( ! isset( $_POST['wdass_meta_auth_nonce'] ) || ! wp_verify_nonce( wp_unslash( sanitize_text_field($_POST['wdass_meta_auth_nonce']) ), 'wdass_meta_auth' ) ) {
+
+        if ( !isset($_POST['wdass_meta_auth_nonce']) || !wp_verify_nonce(sanitize_text_field(wp_unslash($_POST['wdass_meta_auth_nonce'])), 'wdass_meta_auth') ) {
             return $post_ID;
         }
 
 
-        if ( $_SERVER["REQUEST_METHOD"] == "POST" && $update ) {
-            $this->event_fields['schedule_status'] = !empty( $_POST['wdass_schedule_status'] ) ? sanitize_text_field( $_POST['wdass_schedule_status'] ) : 'inactive';
+        if ( isset($_SERVER["REQUEST_METHOD"]) && $_SERVER["REQUEST_METHOD"] == "POST" && $update ) {
+            $this->event_fields['schedule_status'] = !empty( $_POST['wdass_schedule_status'] ) ? sanitize_text_field(wp_unslash($_POST['wdass_schedule_status'])) : 'inactive';
 
             if ( $this->event_fields['schedule_status'] !== 'pending' ) {
                 return;
             }
             
-            $this->event_fields['schedule_date'] = sanitize_text_field( $_POST['wdass_schedule_date'] );
-            $this->event_fields['schedule_time'] = sanitize_text_field( $_POST['wdass_schedule_time'] );
+            $this->event_fields['schedule_date'] = isset($_POST['wdass_schedule_date']) ? sanitize_text_field(wp_unslash($_POST['wdass_schedule_date'])) : '';
+            $this->event_fields['schedule_time'] = isset($_POST['wdass_schedule_time']) ? sanitize_text_field(wp_unslash($_POST['wdass_schedule_time'])) : '';
             
             // $existent = json_decode( stripslashes( sanitize_text_field( wp_unslash( $_POST['wdass_existing_event'] ) ) ), true );
-            $existent = json_decode( sanitize_text_field( wp_unslash( $_POST['wdass_existing_event'] ) ), true );
+            $existent = json_decode(sanitize_text_field(wp_unslash( isset($_POST['wdass_existing_event']) ? $_POST['wdass_existing_event'] : [] )), true);
             
             global $wpdb;
 
@@ -648,18 +670,18 @@ class WDASS__meta_boxes extends WDASS_HTML {
             *  Getting modified data to be scheduled
             *-------------------------------------------*/
             // $parent_modified_data = json_decode( stripslashes( sanitize_text_field( wp_unslash( $_POST['wdass_parent_data'] ) ) ), true );
-            $parent_modified_data = json_decode( sanitize_text_field( wp_unslash( $_POST['wdass_parent_data'] ) ), true );
+            $parent_modified_data = json_decode(sanitize_text_field(wp_unslash( isset($_POST['wdass_parent_data']) ? $_POST['wdass_parent_data'] : [] )), true );
 
-            $event_data[ 'modified' ] = $parent_modified_data;
+            $event_data['modified'] = $parent_modified_data;
 
-            if ( isset( $_POST['wdass_' . $post_ID . '_post_excerpt'] ) ) {
-                $_post_excerpt = stripslashes(wp_kses_post($_POST['wdass_' . $post_ID . '_post_excerpt']));
+            if (isset($_POST['wdass_'.$post_ID.'_post_excerpt'])) {
+                $_post_excerpt = wp_kses_post(wp_unslash($_POST['wdass_'.$post_ID.'_post_excerpt']));
                 $event_data[ 'modified' ][ $post_ID ][ 'post_excerpt' ] = ! empty( $_post_excerpt ) ? $_post_excerpt : '404';
             }
-            
-            if ( isset( $_POST['wdass_' . $post_ID . '_post_content'] ) ) {
-                $_post_content = stripslashes(wp_kses_post($_POST['wdass_' . $post_ID . '_post_content']));
-                $event_data[ 'modified' ][ $post_ID ][ 'post_content' ] = ! empty( $_post_content ) ? $_post_content : '404';
+
+            if (isset($_POST['wdass_'.$post_ID.'_post_content'])) {
+                $_post_content = wp_kses_post(wp_unslash($_POST['wdass_'.$post_ID.'_post_content']));
+                $event_data[ 'modified' ][ $post_ID ][ '_post_content' ] = ! empty( $_post_content ) ? $_post_content : '404';
             }
             
 

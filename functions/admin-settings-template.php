@@ -21,11 +21,26 @@ if ( !function_exists( 'wdass_admin_settings_template' ) ) {
     
         // show error/update messages
         settings_errors( 'wdass_messages' );
+        
+ 
+        /*-------------------------------------------
+        *  Bailout if nonce is not verified
+        *-------------------------------------------*/
+        if ( ! isset( $_POST['wdass_admin_settings_nonce'] ) || ! wp_verify_nonce( sanitize_text_field(wp_unslash($_POST['wdass_admin_settings_nonce'])), 'wdass_admin_settings' ) ) {
+            return;
+        }
+		
         ?>
         <div class="wrap">
             <h1><?php echo esc_html( $page_title ); ?></h1>
             <form action="options.php" method="post">
                 <?php
+
+
+                /*----- Nonce Field : So that we can verify while saving -----*/
+                wp_nonce_field( 'wdass_admin_settings', 'wdass_admin_settings_nonce' );
+		
+		
                 /*
                 * Prints the input fields with names 'nonce', 'action', and 'option_page' in form section of settings page.
                 * The 'schedule_settings' is the settings group name, wich should match the group name used in register_settings()

@@ -7,13 +7,25 @@ defined( 'ABSPATH' ) || exit;
 *  Displaying all the events under 'Events' submenu
 *---------------------------------------------------------*/
 function wdass_scheduled_events () {
-	global $wpdb;
 	
-	$table_events	= $wpdb->prefix . 'wdass_events';
+	$all_events = wp_cache_get( 'wdass_events_cache' );
 
-	$events_sql = $wpdb->get_results($wpdb->prepare("SELECT * FROM %i;", [ $table_events ]));
+	if ($all_events === false) {
+		global $wpdb;
+		$table_events = $wpdb->prefix . 'wdass_events';
+		
+		$all_events = $wpdb->get_results($wpdb->prepare(
+			"SELECT * FROM %i;",
+			[ $table_events ]
+		));
 
-	if ( count( $events_sql ) ) {
+		// Cache the result
+		wp_cache_set($cache_key, $all_events);
+	}
+
+	// Now you can use $events
+
+	if ( count( $all_events ) ) {
 		?>
 		<hr class="wdass__spacer">
 		<h1>All Events</h1>
@@ -28,7 +40,7 @@ function wdass_scheduled_events () {
 			<tbody>
 			<?php
 
-			foreach ( $events_sql as $event ) {
+			foreach ( $all_events as $event ) {
 				?>
 				<tr>
 					<td><strong>#<?php echo esc_html( $event->object_id ); ?></strong> <?php echo esc_html( get_the_title( $event->object_id ) ); ?></td>

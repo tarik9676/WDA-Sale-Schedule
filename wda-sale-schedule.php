@@ -7,6 +7,8 @@
 * Version:              1.2.0
 * Requires at least:    6.2
 * Requires PHP:         5.6.20
+* License:              GPLv2 or later
+* License URI:          https://www.gnu.org/licenses/gpl-2.0.html
 * Author:               Web Dev Advisor
 * Author URI:           https://webdevadvisor.com/
 * Text Domain:          wda-sale-schedule

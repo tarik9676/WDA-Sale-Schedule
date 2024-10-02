@@ -36,11 +36,11 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
                 wp_cache_set($pending_events_cache_key, $pending_events);
             }
 
-            if ( count( $pending_events ) ) {
+            if ( count($pending_events) ) {
                 foreach ( $pending_events as $event ) {
                     $schedule_time_string = $event->schedule_date . ' ' . $event->schedule_time;
 
-                    if ( strtotime( current_time( 'mysql' ) ) > strtotime( $schedule_time_string ) ) {
+                    if ( strtotime(current_time('mysql')) > strtotime($schedule_time_string) ) {
                         $this->execute( $wpdb, $event->object_id, $event->id, 'modified', 'schedule_status', 'completed' );
                     }
 

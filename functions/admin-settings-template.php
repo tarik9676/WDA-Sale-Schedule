@@ -16,7 +16,7 @@ if ( !function_exists( 'wdass_admin_settings_template' ) ) {
         // WordPress will add the "settings-updated" $_GET parameter to the url
         if ( isset( $_GET['settings-updated'] ) ) {
             // add settings saved message with the class of "updated"
-            add_settings_error( 'wdass_messages', 'wdass_message', __( 'Settings Saved', 'wda-sale-schedule' ), 'updated' );
+            add_settings_error( 'wdass_messages', 'wdass_message', __( 'Settings Saved', WDASS_TEXTDOMAIN ), 'updated' );
         }
     
         // show error/update messages

@@ -88,7 +88,7 @@ class WDASS__meta_boxes extends WDASS_HTML {
         if ( in_array( $post_type, ['product'] ) ) {
             add_meta_box(
                 '_wdass_event_data',
-                __( 'Schedule Event Data', 'wda-sale-schedule' ), 
+                __( 'Schedule Event Data', WDASS_TEXTDOMAIN ), 
                 [ $this, 'meta_box_html' ],
                 $post_type,
                 'normal',

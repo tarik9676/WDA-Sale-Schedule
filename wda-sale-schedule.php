@@ -4,7 +4,7 @@
 * Plugin Name:          WDA Sale Schedule
 * Description:          Make your sale dynamic by WDA Sale Schedule. Setup scheduled tasks like sale price, title, descriptions, category/tag changing etc. at a certiain date & time or for a specific time range.
 * Plugin URI:           https://webdevadvisor.com/product/wda-sale-schedule/
-* Version:              1.3.0
+* Version:              1.4.0
 * Requires at least:    6.2
 * Requires PHP:         5.6.20
 * License:              GPLv2 or later

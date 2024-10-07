@@ -4,7 +4,7 @@ Tags: WooCommerce, Sales, Scheduling, Dynamic Pricing, Product Management
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.3.0
+Stable tag: 1.4.0
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,13 +29,13 @@ Designed for store administrators who want to maximize their efficiency, WDA Sal
   - Stock Management, including Stock Quantity and Status
   - Short and Long Descriptions
   - Review Status
-- **Premium Features**: Expand your scheduling capabilities with premium options, including:
   - Categories and Tags
   - Variable Product Thumbnail
   - Virtual and Downloadable Switches
   - Additional Stock and Pricing Options
-- **Backup and Restore**: Automatically backup original product data before making changes, with the option to restore original content after the sale ends.
-- **Seamless Integration**: Built to work within the WooCommerce product editor, ensuring a smooth user experience without disrupting your existing workflow.
+
+- **Premium Features**: Expand your scheduling capabilities with premium options, including:
+  * Backup and Restore: Automatically backup original product data before making changes, with the option to restore original content after the sale ends.
 
 With WDA Sale Schedule, you can prepare your sales campaigns well in advance, allowing you to focus on other important aspects of your business.
 

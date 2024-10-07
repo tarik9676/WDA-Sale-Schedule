@@ -4,11 +4,10 @@ Tags: WooCommerce, Sales, Scheduling, Dynamic Pricing, Product Management
 Requires at least: 6.0
 Tested up to: 6.6
 Requires PHP: 7.4
-Stable tag: 1.4.0
+Stable tag: 1.4.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
-== Short Description ==
 Automate and schedule WooCommerce product changes, including prices, titles, and descriptions, for seamless sales management.
 
 == Description ==
@@ -72,8 +71,15 @@ No, this plugin requires WooCommerce to function.
 4. **Content Fields** - Schedule updates to short and long descriptions, slugs, and review status.
 
 == Changelog ==
-= 1.2.0 =
-* Product Thumbnail available free version and improved events status table.
+
+= 1.4.1 =
+* improved performance
+
+= 1.4.0 =
+* Unlocked pro features
+
+= 1.3.0 =
+* improved performance
 
 = 1.1.1 =
 * Fixed minor issues to improve stability.

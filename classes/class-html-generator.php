@@ -1,13 +1,13 @@
 <?php
 
-if ( ! class_exists( 'WDASS_HTML' ) ) {
+if ( ! class_exists( 'WDASS_HTML' ) ) :
 
 
 class WDASS_HTML {
-    public $premium_notice;
 
-    public function __construct() {
-        $this->premium_notice = '<span class="wdass__premium-notice">Unlock this feature by <a href="//webdevadvisor.com">Upgrading to premium version</a></span>';
+    
+    public function premium_notice () {
+        ?><span class="wdass__premium-notice"><a href="//webdevadvisor.com">Unlock this feature by Upgrading to premium version</a></span><?php
     }
     
     
@@ -15,7 +15,6 @@ class WDASS_HTML {
     *  Meta box tabs
     *-------------------------------------------*/
     public function tabs ( $args = [] ) {
-        // $html = '';
 
         foreach ($args as $key => $value) {
             $class  = array_key_exists( 'class', $value ) ? $value['class'] : '';
@@ -138,9 +137,7 @@ class WDASS_HTML {
 
             <input class="wdass__media-input wdass_field" name="<?php echo esc_attr( 'wdass_' . $params['field_key'] ); ?>" type="hidden" value="<?php echo esc_attr( $params['media_id'] ); ?>" />
 
-            <?php if ( $premium ) : ?>
-                <span class="wdass__premium-notice">Unlock this feature by <a href="//webdevadvisor.com">Upgrading to premium version</a></span>
-            <?php endif; ?>
+            <?php $premium ? $this->premium_notice() : ''; ?>
         </div>
         <?php
     }
@@ -188,10 +185,8 @@ class WDASS_HTML {
                     $this->input( $params );
                     break;
             }
-
-            if ( $params['is_premium'] ) : ?>
-            <span class="wdass__premium-notice">Unlock this feature by <a href="//webdevadvisor.com">Upgrading to premium version</a></span>
-            <?php endif; ?>
+            
+            $params['is_premium'] ? $this->premium_notice() : '';?>
 
         </p>
         <?php
@@ -199,4 +194,4 @@ class WDASS_HTML {
 }
 
 
-}
+endif;

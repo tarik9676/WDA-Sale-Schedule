@@ -51,14 +51,8 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
         private function execute ( $wpdb, $post_id, $event_id, $data_type, $status_key, $status_value ) {
 
             $table_events   = $wpdb->prefix . 'wdass_events';
-            
 
-            
-            $post_data = [
-                'ID' => $post_id,
-                'meta_input' => []
-            ];
-
+            $all_posts_data = [];
             
 
             /*----------------------------------------------------
@@ -78,19 +72,20 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
 
                 wp_cache_set($cache_key_events_metas, $all_event_metas);
             }
-
+            
 
 
             foreach ( $all_event_metas as $meta ) {
+
                 $first_character = substr($meta->meta_key, 0, 1);
                 
                 if ( $meta->content !== '404' ) {
                     switch ( $first_character ) {
                         case '_':
-                            $post_data[ 'meta_input' ][ $meta->meta_key ] = $meta->content;
+                            $all_posts_data[ $meta->post_id ][ 'meta_input' ][ $meta->meta_key ] = $meta->content;
 
                             if ( $meta->meta_key == '_sale_price') {
-                                $post_data[ 'meta_input' ][ '_price' ] = $meta->content;
+                                $all_posts_data[ $meta->post_id ][ 'meta_input' ][ '_price' ] = $meta->content;
                             }
                             break;
     
@@ -102,7 +97,7 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
                             break;
                         
                         default:
-                            $post_data[ $meta->meta_key ] = $meta->content;
+                            $all_posts_data[ $meta->post_id ][ $meta->meta_key ] = $meta->content;
                             break;
                     }
                 }
@@ -114,8 +109,13 @@ if ( ! class_exists( 'WDASS__Run_Events' ) ) {
             *  Update the post with scheduled data
             *----------------------------------------------------*/
 
-            wp_update_post( $post_data );
+            foreach ($all_posts_data as $pid => $post_object) {
+                $post_object['ID'] = $pid;
+                wp_update_post( $post_object );
+            }
             
+
+            update_option( 'wplab_test', json_encode($all_posts_data) );
 
 
             /*----------------------------------------------------
